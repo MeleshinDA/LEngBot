@@ -1,4 +1,4 @@
-package com.example.LEngBot;
+package com.example.lengbot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

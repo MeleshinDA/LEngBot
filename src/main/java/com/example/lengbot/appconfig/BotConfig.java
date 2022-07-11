@@ -1,6 +1,6 @@
-package com.example.LEngBot.appconfig;
+package com.example.lengbot.appconfig;
 
-import com.example.LEngBot.LEngBot;
+import com.example.lengbot.LEngBot;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

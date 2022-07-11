@@ -1,4 +1,4 @@
-package com.example.LEngBot;
+package com.example.lengbot;
 
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;

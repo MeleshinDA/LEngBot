@@ -1,4 +1,4 @@
-package com.example.LEngBot;
+package com.example.lengbot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

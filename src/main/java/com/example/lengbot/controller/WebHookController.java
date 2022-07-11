@@ -1,6 +1,6 @@
-package com.example.LEngBot.controller;
+package com.example.lengbot.controller;
 
-import com.example.LEngBot.LEngBot;
+import com.example.lengbot.LEngBot;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
