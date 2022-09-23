@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class Question {
     private String text;
-    private List<String> possibleAnswers;
+    private String possibleAnswers;
     private String rightAnswer;
     private int weight;
 
@@ -17,7 +17,7 @@ public class Question {
 
     }
 
-    public Question(String text, List<String> possibleAnswers, String rightAnswer, int weight) {
+    public Question(String text, String possibleAnswers, String rightAnswer, int weight) {
         this.text = text;
         this.possibleAnswers = possibleAnswers;
         this.rightAnswer = rightAnswer;
