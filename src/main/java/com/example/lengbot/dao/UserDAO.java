@@ -19,4 +19,14 @@ public class UserDAO {
     {
         return jdbcTemplate.queryForObject("SELECT id, lvl FROM user WHERE id=?", new Object[]{ id }, new UserMapper());
     }
+
+    public void SaveUser(long chatId)
+    {
+        jdbcTemplate.update("INSERT INTO users(id, lvl) VALUES(?, ?)", chatId, "A0");
+    }
+
+    public void UpdateUser(long chatId, String lvl)
+    {
+        jdbcTemplate.update("INSERT INTO users(id, lvl) VALUES(?, ?)", chatId, lvl);
+    }
 }
