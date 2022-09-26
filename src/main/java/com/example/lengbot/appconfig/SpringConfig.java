@@ -1,13 +1,14 @@
 package com.example.lengbot.appconfig;
 
-import com.example.lengbot.LEngBot;
+import com.example.lengbot.telegram.LEngBot;
+import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
+import com.example.lengbot.telegram.handlers.MessageHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
-import javax.websocket.MessageHandler;
+
 
 @Configuration
 @AllArgsConstructor
@@ -24,11 +25,12 @@ public class SpringConfig {
     }
 
     @Bean
-    public LEngBot springWebHookBot(SetWebhook setWebhook, MessageHandler messageHandler, CallbackQuery callbackQuery)
+    public LEngBot springWebHookBot(SetWebhook setWebhook, MessageHandler messageHandler, CallbackQueryHandler callbackQueryHandler)
     {
-        LEngBot lEngBot = new LEngBot(setWebhook, messageHandler, callbackQuery);
-        lEngBot.setWebhook(botConfig.getWebHookPath());
-        lEngBot.setBotUserName(botConfig.getBotUsername());
+        LEngBot lEngBot = new LEngBot(setWebhook, messageHandler, callbackQueryHandler);
+
+        lEngBot.setBotPath(botConfig.getWebHookPath());
+        lEngBot.setBotUsername(botConfig.getBotUsername());
         lEngBot.setBotToken(botConfig.getBotToken());
         return lEngBot;
     }
