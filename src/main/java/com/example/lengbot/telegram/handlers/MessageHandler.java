@@ -9,25 +9,28 @@ import com.example.lengbot.models.Question;
 import com.example.lengbot.telegram.TelegramApiClient;
 import com.example.lengbot.telegram.keyboards.InlineKeyboardMaker;
 import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.LinkedList;
 import java.util.List;
 
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MessageHandler {
 
     //private Boolean isTesting = false;
 
-    TelegramApiClient telegramApiClient;
+
     ReplyKeyboardMaker replyKeyboardMaker;
     InlineKeyboardMaker inlineKeyboardMaker;
     UserDAO userDAO;
+    QuestionDAO questionDAO;
 
     //HandlersAPI handlersAPI;
 
@@ -40,10 +43,8 @@ public class MessageHandler {
         return switch (inputText){
             case null -> throw new IllegalArgumentException();
             case "/start" -> getStartMessage(chatId);
-            case "Пройти тест" -> {
+            case "Пройти тест" -> getTestMessages(chatId);
                 //isTesting = true;
-                yield getTestMessages(chatId);
-            }
             case "Ввести уровень" -> getLevelMessages(chatId);
             default -> new SendMessage(chatId, "Пожалуйста воспользуйтесь клавиатурой");
         };
@@ -58,8 +59,16 @@ public class MessageHandler {
     }
 
     private SendMessage getTestMessages(String chatId){
-
-
+        List<Question> questions =  questionDAO.GetTest();
+        List<SendMessage> messages = new LinkedList<>();
+        for (Question question: questions){
+            SendMessage newMessage = new SendMessage(chatId, question.getText());
+            newMessage.setReplyMarkup(inlineKeyboardMaker.getInlineMessageButtons(" "));
+            messages.add(newMessage);
+        }
+        SendMessage newMessage = new SendMessage(chatId, questions.get(0).getText());
+        newMessage.setReplyMarkup(inlineKeyboardMaker.getInlineMessageButtons(" "));
+        messages.add(newMessage);
         /*Question curQuestion = handlersAPI.GetNextQuestion();
         SendMessage sendMessage = new SendMessage(chatId, "");
         sendMessage.enableMarkdown(true);
@@ -74,7 +83,7 @@ public class MessageHandler {
             sendMessage.setText(curQuestion.getText() + "\n" + curQuestion.getPossibleAnswers());
 
         return sendMessage;*/
-        return null;
+        return newMessage;
     }
 
     private SendMessage getLevelMessages(String chatId){

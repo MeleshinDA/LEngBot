@@ -12,11 +12,11 @@ import java.util.List;
 @Component
 public class InlineKeyboardMaker {
 
-    public InlineKeyboardMarkup getInlineMessageButtons(String prefix){
+    public InlineKeyboardMarkup getInlineMessageButtons(String prefix) {
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
 
-        for(InlineAnswersEnum answers : InlineAnswersEnum.values()){
-            rowList.add(getButton(answers.getButtonName(), prefix+answers.name()));
+        for (InlineAnswersEnum answers : InlineAnswersEnum.values()) {
+            rowList.add(getButton(answers.getButtonName(), prefix + answers.name()));
         }
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
