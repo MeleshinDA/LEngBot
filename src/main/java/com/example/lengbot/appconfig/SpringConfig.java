@@ -1,5 +1,6 @@
 package com.example.lengbot.appconfig;
 
+import com.example.lengbot.API.HandlersAPI;
 import com.example.lengbot.telegram.LEngBot;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
 import com.example.lengbot.telegram.handlers.MessageHandler;
@@ -34,6 +35,11 @@ public class SpringConfig {
     @Bean
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate(dataSource());
+    }
+
+    @Bean
+    public HandlersAPI handlersAPI(){
+        return new HandlersAPI();
     }
 
     @Bean

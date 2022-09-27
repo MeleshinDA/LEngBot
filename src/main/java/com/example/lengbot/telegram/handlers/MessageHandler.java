@@ -2,11 +2,11 @@ package com.example.lengbot.telegram.handlers;
 
 import com.example.lengbot.API.HandlersAPI;
 import com.example.lengbot.constants.BotMessageEnum;
+import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.models.Question;
-import com.example.lengbot.telegram.TelegramApiClient;
 import com.example.lengbot.telegram.keyboards.InlineKeyboardMaker;
 import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,31 +17,41 @@ import java.util.Set;
 
 
 @Component
-@AllArgsConstructor
 public class MessageHandler {
 
     private Boolean isTesting = false;
     private Boolean isEnteringLvl = false;
-    ReplyKeyboardMaker replyKeyboardMaker;
-    InlineKeyboardMaker inlineKeyboardMaker;
-
-    HandlersAPI handlersAPI;
-    Question curQuestion;
+    private Question curQuestion;
     private int scores;
+    private ReplyKeyboardMaker replyKeyboardMaker;
+    private InlineKeyboardMaker inlineKeyboardMaker;
 
-    public BotApiMethod<?> answerMessage(Message message){
+    private HandlersAPI handlersAPI;
+
+
+    public MessageHandler() {
+
+    }
+
+    @Autowired
+    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, InlineKeyboardMaker inlineKeyboardMaker, HandlersAPI handlersAPI) {
+        this.replyKeyboardMaker = replyKeyboardMaker;
+        this.inlineKeyboardMaker = inlineKeyboardMaker;
+        this.handlersAPI = handlersAPI;
+
+    }
+
+    public BotApiMethod<?> answerMessage(Message message) {
         String chatId = message.getChatId().toString();
         String inputText = message.getText();
 
-        if (isTesting)
-        {
+        if (isTesting) {
             if (curQuestion.getRightAnswer().equals(inputText))
                 scores += curQuestion.getWeight();
             return getTestMessages(chatId);
         }
 
-        if (isEnteringLvl)
-        {
+        if (isEnteringLvl) {
             Set<String> rightLvls = new HashSet<String>();
             rightLvls.add("A0");
             rightLvls.add("A1");
@@ -49,8 +59,7 @@ public class MessageHandler {
             rightLvls.add("B1");
             rightLvls.add("B2");
 
-            if (rightLvls.contains(inputText.toUpperCase()))
-            {
+            if (rightLvls.contains(inputText.toUpperCase())) {
                 handlersAPI.userDAO.UpdateUser(Integer.parseInt(chatId), inputText.toUpperCase());
                 isEnteringLvl = false;
                 return new SendMessage(chatId, "Уровень сохранён");
@@ -75,7 +84,7 @@ public class MessageHandler {
         };
     }
 
-    private SendMessage getStartMessage(String chatId){
+    private SendMessage getStartMessage(String chatId) {
         handlersAPI.userDAO.SaveUser(Integer.parseInt(chatId));
         SendMessage sendMessage = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
         sendMessage.enableMarkdown(true);
@@ -83,18 +92,16 @@ public class MessageHandler {
         return sendMessage;
     }
 
-    private SendMessage getTestMessages(String chatId){
+    private SendMessage getTestMessages(String chatId) {
         curQuestion = handlersAPI.GetNextQuestion();
         SendMessage sendMessage = new SendMessage(chatId, "");
         sendMessage.enableMarkdown(true);
         sendMessage.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
 
-        if (curQuestion == null)
-        {
+        if (curQuestion == null) {
             isTesting = false;
             sendMessage.setText("Тест пройден! Ваш балл:");
-        }
-        else
+        } else
             sendMessage.setText(curQuestion.getText() + "\n" + curQuestion.getPossibleAnswers());
 
         return sendMessage;
