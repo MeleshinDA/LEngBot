@@ -1,6 +1,5 @@
 package com.example.lengbot.appconfig;
 
-import com.example.lengbot.API.HandlersAPI;
 import com.example.lengbot.telegram.LEngBot;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
 import com.example.lengbot.telegram.handlers.MessageHandler;
@@ -12,7 +11,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 
 import javax.sql.DataSource;
-import java.sql.DriverManager;
 
 
 @Configuration
@@ -35,11 +33,6 @@ public class SpringConfig {
     @Bean
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate(dataSource());
-    }
-
-    @Bean
-    public HandlersAPI handlersAPI(){
-        return new HandlersAPI();
     }
 
     @Bean
