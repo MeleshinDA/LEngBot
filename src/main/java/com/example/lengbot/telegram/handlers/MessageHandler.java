@@ -1,7 +1,9 @@
 package com.example.lengbot.telegram.handlers;
 
+import com.example.lengbot.API.UserStatesService;
 import com.example.lengbot.API.UserTestService;
 import com.example.lengbot.constants.BotMessageEnum;
+import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.models.Question;
 import com.example.lengbot.telegram.keyboards.InlineKeyboardMaker;
@@ -12,74 +14,68 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
 public class MessageHandler {
 
-    private Boolean isTesting = false;
-    private Boolean isEnteringLvl = false;
-    private Question curQuestion;
-    private int scores;
+    private UserStatesService userStatesService;
     private ReplyKeyboardMaker replyKeyboardMaker;
     private InlineKeyboardMaker inlineKeyboardMaker;
 
     private UserTestService userTestService;
     private UserDAO userDAO;
 
+    private QuestionDAO questionDAO;
+
+    private List<Question> test;
 
     public MessageHandler() {
 
     }
 
     @Autowired
-    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, InlineKeyboardMaker inlineKeyboardMaker, UserTestService userTestService, UserDAO userDAO) {
+    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, InlineKeyboardMaker inlineKeyboardMaker, UserDAO userDAO, QuestionDAO questionDAO) {
         this.replyKeyboardMaker = replyKeyboardMaker;
         this.inlineKeyboardMaker = inlineKeyboardMaker;
-        this.userTestService = userTestService;
         this.userDAO = userDAO;
-
+        this.questionDAO = questionDAO;
+        this.test = new ArrayList<>(this.questionDAO.GetTest());
     }
 
     public BotApiMethod<?> answerMessage(Message message) {
         String chatId = message.getChatId().toString();
         String inputText = message.getText();
 
-        if (isTesting) {
-            if (curQuestion.getRightAnswer().equals(inputText))
-                scores += curQuestion.getWeight();
+        if (userStatesService.getIsTesting())
+        {
+            userTestService.CheckAnswer(inputText);
             return getTestMessages(chatId);
         }
 
-        if (isEnteringLvl) {
-            Set<String> rightLvls = new HashSet<>();
-            rightLvls.add("A0");
-            rightLvls.add("A1");
-            rightLvls.add("A2");
-            rightLvls.add("B1");
-            rightLvls.add("B2");
-
-            if (rightLvls.contains(inputText.toUpperCase())) {
+        if (userStatesService.getIsEnteringLvl())
+        {
+            if (userTestService.CheckUserLvl(inputText))
+            {
                 userDAO.UpdateUser(Integer.parseInt(chatId), inputText.toUpperCase());
-                isEnteringLvl = false;
+                userStatesService.setIsEnteringLvl(false);
                 return new SendMessage(chatId, "Уровень сохранён");
             }
-
             return new SendMessage(chatId, "Неправильно введён уровень, доступные варианты: A0, A1, A2, B1, B2");
         }
-
 
         return switch (inputText) {
             case null -> throw new IllegalArgumentException();
             case "/start" -> getStartMessage(chatId);
             case "Пройти тест" -> {
-                isTesting = true;
+                userStatesService.setIsTesting(true);
+                userTestService = new UserTestService(test);
                 yield getTestMessages(chatId);
             }
             case "Ввести уровень" -> {
-                isEnteringLvl = true;
+                userStatesService.setIsEnteringLvl(true);
                 yield getLevelMessages(chatId);
             }
             default -> new SendMessage(chatId, "Пожалуйста воспользуйтесь клавиатурой");
@@ -95,13 +91,13 @@ public class MessageHandler {
     }
 
     private SendMessage getTestMessages(String chatId) {
-        curQuestion = userTestService.GetNextQuestion();
+        Question curQuestion = userTestService.NextQuestion();
         SendMessage sendMessage = new SendMessage(chatId, "");
         sendMessage.enableMarkdown(true);
         sendMessage.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
 
         if (curQuestion == null) {
-            isTesting = false;
+            userStatesService.setIsTesting(true);
             sendMessage.setText("Тест пройден! Ваш балл:");
         } else
             sendMessage.setText(curQuestion.getText() + "\n" + curQuestion.getPossibleAnswers());
