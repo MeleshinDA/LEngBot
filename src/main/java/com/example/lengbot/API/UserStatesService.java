@@ -2,11 +2,11 @@ package com.example.lengbot.API;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Scope;
 
 @Getter
 @Setter
-@Service
+@Scope("prototype")
 public class UserStatesService {
     private Boolean isTesting = false;
     private Boolean isEnteringLvl = false;

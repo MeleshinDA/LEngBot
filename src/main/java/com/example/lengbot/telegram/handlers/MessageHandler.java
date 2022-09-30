@@ -6,8 +6,8 @@ import com.example.lengbot.constants.BotMessageEnum;
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.models.Question;
-import com.example.lengbot.telegram.keyboards.InlineKeyboardMaker;
 import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -18,17 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Getter
 @Component
 public class MessageHandler {
 
     private UserStatesService userStatesService;
     private ReplyKeyboardMaker replyKeyboardMaker;
-    private InlineKeyboardMaker inlineKeyboardMaker;
 
     private UserTestService userTestService;
     private UserDAO userDAO;
-
     private QuestionDAO questionDAO;
+
 
     private List<Question> test;
 
@@ -37,14 +37,17 @@ public class MessageHandler {
     }
 
     @Autowired
-    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, InlineKeyboardMaker inlineKeyboardMaker, UserDAO userDAO, QuestionDAO questionDAO, UserStatesService userStatesService, UserTestService userTestService) {
+    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, UserDAO userDAO, QuestionDAO questionDAO, UserTestService userTestService) {
         this.replyKeyboardMaker = replyKeyboardMaker;
-        this.inlineKeyboardMaker = inlineKeyboardMaker;
         this.userDAO = userDAO;
         this.questionDAO = questionDAO;
         this.test = new ArrayList<>(this.questionDAO.GetTest());
-        this.userStatesService = userStatesService;
+        this.userStatesService = new UserStatesService();
         this.userTestService = userTestService;
+    }
+
+    public MessageHandler(MessageHandler that){
+        this(that.getReplyKeyboardMaker(), that.getUserDAO(), that.getQuestionDAO(), that.getUserTestService());
     }
 
     public BotApiMethod<?> answerMessage(Message message) {
@@ -92,7 +95,6 @@ public class MessageHandler {
     private SendMessage getTestMessages(String chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "");
         sendMessage.enableMarkdown(true);
-        sendMessage.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
         Question curQuestion = userTestService.NextQuestion();
 
         if (curQuestion == null) {

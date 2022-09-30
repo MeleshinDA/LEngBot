@@ -1,11 +1,17 @@
 package com.example.lengbot.appconfig;
 
+import com.example.lengbot.API.UserStatesService;
+import com.example.lengbot.API.UserTestService;
+import com.example.lengbot.dao.QuestionDAO;
+import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.telegram.LEngBot;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
 import com.example.lengbot.telegram.handlers.MessageHandler;
+import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
@@ -45,9 +51,9 @@ public class SpringConfig {
     }
 
     @Bean
-    public LEngBot springWebHookBot(SetWebhook setWebhook, MessageHandler messageHandler, CallbackQueryHandler callbackQueryHandler)
+    public LEngBot lEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler, MessageHandler messageHandler)
     {
-        LEngBot lEngBot = new LEngBot(setWebhook, messageHandler, callbackQueryHandler);
+        LEngBot lEngBot = new LEngBot(setWebhook, callbackQueryHandler, messageHandler);
 
         lEngBot.setBotPath(botConfig.getWebHookPath());
         lEngBot.setBotUsername(botConfig.getBotUsername());

@@ -2,7 +2,7 @@ package com.example.lengbot.API;
 
 import com.example.lengbot.models.Question;
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import java.util.Set;
 
 @Service
 @Getter
+@Scope("prototype")
 public class UserTestService {
 
     private List<Question> test;
