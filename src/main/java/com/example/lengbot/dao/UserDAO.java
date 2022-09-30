@@ -28,6 +28,6 @@ public class UserDAO {
 
     public void UpdateUser(long chatId, String lvl)
     {
-        jdbcTemplate.update("INSERT INTO users(id, lvl) VALUES(?, ?)", chatId, lvl);
+        jdbcTemplate.update("UPDATE users SET lvl=? WHERE id=?", lvl, chatId);
     }
 }

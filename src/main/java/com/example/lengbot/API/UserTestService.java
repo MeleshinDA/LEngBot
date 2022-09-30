@@ -1,7 +1,8 @@
 package com.example.lengbot.API;
 
-import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.models.Question;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Getter
 public class UserTestService {
 
     private List<Question> test;
@@ -19,29 +21,27 @@ public class UserTestService {
     private int curQuestionIndex;
     private Question curQuestion;
 
-    public UserTestService(){}
+    public UserTestService() {
+    }
 
     public UserTestService(List<Question> test) {
-        this.test = test;
+        this.test = new ArrayList<>(test);
     }
 
-    public Question NextQuestion()
-    {
-        if(curQuestionIndex == test.size() - 1) {
+    public Question NextQuestion() {
+        if (curQuestionIndex <= test.size() - 1) {
             curQuestion = test.get(curQuestionIndex++);
             return curQuestion;
-        }
-        return null;
+        } else
+            return null;
     }
 
-    public void CheckAnswer(String answer)
-    {
+    public void CheckAnswer(String answer) {
         if (curQuestion.getRightAnswer().equals(answer))
             scores += curQuestion.getWeight();
     }
 
-    public Boolean CheckUserLvl(String lvl)
-    {
+    public Boolean CheckUserLvl(String lvl) {
         Set<String> rightLvls = new HashSet<>();
         rightLvls.add("A0");
         rightLvls.add("A1");
@@ -50,5 +50,11 @@ public class UserTestService {
         rightLvls.add("B2");
 
         return rightLvls.contains(lvl.toUpperCase());
+    }
+
+    public void resetTest() {
+        curQuestion = null;
+        curQuestionIndex = 0;
+        scores = 0;
     }
 }

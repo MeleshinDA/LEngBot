@@ -37,28 +37,27 @@ public class MessageHandler {
     }
 
     @Autowired
-    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, InlineKeyboardMaker inlineKeyboardMaker, UserDAO userDAO, QuestionDAO questionDAO) {
+    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, InlineKeyboardMaker inlineKeyboardMaker, UserDAO userDAO, QuestionDAO questionDAO, UserStatesService userStatesService, UserTestService userTestService) {
         this.replyKeyboardMaker = replyKeyboardMaker;
         this.inlineKeyboardMaker = inlineKeyboardMaker;
         this.userDAO = userDAO;
         this.questionDAO = questionDAO;
         this.test = new ArrayList<>(this.questionDAO.GetTest());
+        this.userStatesService = userStatesService;
+        this.userTestService = userTestService;
     }
 
     public BotApiMethod<?> answerMessage(Message message) {
         String chatId = message.getChatId().toString();
         String inputText = message.getText();
 
-        if (userStatesService.getIsTesting())
-        {
+        if (userStatesService.getIsTesting()) {
             userTestService.CheckAnswer(inputText);
             return getTestMessages(chatId);
         }
 
-        if (userStatesService.getIsEnteringLvl())
-        {
-            if (userTestService.CheckUserLvl(inputText))
-            {
+        if (userStatesService.getIsEnteringLvl()) {
+            if (userTestService.CheckUserLvl(inputText)) {
                 userDAO.UpdateUser(Integer.parseInt(chatId), inputText.toUpperCase());
                 userStatesService.setIsEnteringLvl(false);
                 return new SendMessage(chatId, "Уровень сохранён");
@@ -91,14 +90,15 @@ public class MessageHandler {
     }
 
     private SendMessage getTestMessages(String chatId) {
-        Question curQuestion = userTestService.NextQuestion();
         SendMessage sendMessage = new SendMessage(chatId, "");
         sendMessage.enableMarkdown(true);
         sendMessage.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        Question curQuestion = userTestService.NextQuestion();
 
         if (curQuestion == null) {
-            userStatesService.setIsTesting(true);
-            sendMessage.setText("Тест пройден! Ваш балл:");
+            userStatesService.setIsTesting(false);
+            sendMessage.setText("Тест пройден! Ваш балл: " + userTestService.getScores());
+            userTestService.resetTest();
         } else
             sendMessage.setText(curQuestion.getText() + "\n" + curQuestion.getPossibleAnswers());
 
