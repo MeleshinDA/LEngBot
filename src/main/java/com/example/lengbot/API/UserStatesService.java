@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 
+/**
+ * Состояния пользователя
+ */
 @Getter
 @Setter
 @Scope("prototype")

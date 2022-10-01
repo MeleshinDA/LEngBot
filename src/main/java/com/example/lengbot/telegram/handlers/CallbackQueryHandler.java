@@ -16,8 +16,6 @@ public class CallbackQueryHandler {
 
         String data = buttonQuery.getData();
 
-        return switch (data){
-            case default -> new SendMessage(chatId, data);
-        };
+        return  new SendMessage(chatId, data);
     }
 }

@@ -20,6 +20,9 @@ import org.telegram.telegrambots.starter.SpringWebhookBot;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Класс бота
+ */
 @Getter
 @Setter
 public class LEngBot extends SpringWebhookBot {
@@ -55,6 +58,10 @@ public class LEngBot extends SpringWebhookBot {
     }
 
 
+    /**
+     * @param update обновление от пользователя
+     * @return обработанное ботом сообщение
+     */
     private BotApiMethod<?> handleUpdate(Update update) {
         long chatId = update.getMessage().getChatId();
 

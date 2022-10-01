@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Обработчик сообщений пользователя
+ */
 @Getter
 @Component
 public class MessageHandler {
@@ -50,6 +53,10 @@ public class MessageHandler {
         this(that.getReplyKeyboardMaker(), that.getUserDAO(), that.getQuestionDAO(), that.getUserTestService());
     }
 
+    /**
+     * @param message сообщение от пользователя
+     * @return ответ на сообщение пользователя
+     */
     public BotApiMethod<?> answerMessage(Message message) {
         String chatId = message.getChatId().toString();
         String inputText = message.getText();
@@ -85,6 +92,11 @@ public class MessageHandler {
         };
     }
 
+    /**
+     *
+     * @param chatId идентификатор пользователя
+     * @return сообщение с приветственным текстом
+     */
     private SendMessage getStartMessage(String chatId) {
         userDAO.SaveUser(Integer.parseInt(chatId));
         SendMessage sendMessage = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
@@ -93,6 +105,10 @@ public class MessageHandler {
         return sendMessage;
     }
 
+    /**
+     * @param chatId идентификатор пользователя
+     * @return сообщения с текстом вопросов теста
+     */
     private SendMessage getTestMessages(String chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "");
         sendMessage.enableMarkdown(true);
@@ -110,6 +126,10 @@ public class MessageHandler {
         return sendMessage;
     }
 
+    /**
+     * @param chatId идентификатор пользователя
+     * @return сообщение с текстом запроса уровня
+     */
     private SendMessage getLevelMessages(String chatId) {
 
         SendMessage sendMessage = new SendMessage(chatId, "Введите уровень:");
