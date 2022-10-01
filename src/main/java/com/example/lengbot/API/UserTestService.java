@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Класс работы с тестом пользователя
+ */
 @Service
 @Getter
 @Scope("prototype")
@@ -17,18 +20,29 @@ public class UserTestService {
 
     private List<Question> test;
 
-    private int scores;
+    private int score;
 
     private int curQuestionIndex;
     private Question curQuestion;
+    private Set<String> rightLevels = new HashSet<>();
 
     public UserTestService() {
     }
 
     public UserTestService(List<Question> test) {
         this.test = new ArrayList<>(test);
+        rightLevels.add("A1");
+        rightLevels.add("A2");
+        rightLevels.add("B1");
+        rightLevels.add("B2");
+        rightLevels.add("C1");
+        rightLevels.add("C2");
     }
 
+    /**
+     * Итерируется по вопросам теста
+     * @return очередной вопрос
+     */
     public Question NextQuestion() {
         if (curQuestionIndex <= test.size() - 1) {
             curQuestion = test.get(curQuestionIndex++);
@@ -37,25 +51,49 @@ public class UserTestService {
             return null;
     }
 
+    /**
+     * Проверка правильности ответа
+     * @param answer ответ пользователя на вопрос теста
+     */
     public void CheckAnswer(String answer) {
         if (curQuestion.getRightAnswer().equals(answer))
-            scores += curQuestion.getWeight();
+            score += curQuestion.getWeight();
     }
 
+    /**
+     * Проверка правильности введенного уровня языка
+     * @param lvl введенный уровень языка
+     * @return правильность введенного
+     */
     public Boolean CheckUserLvl(String lvl) {
-        Set<String> rightLvls = new HashSet<>();
-        rightLvls.add("A0");
-        rightLvls.add("A1");
-        rightLvls.add("A2");
-        rightLvls.add("B1");
-        rightLvls.add("B2");
-
-        return rightLvls.contains(lvl.toUpperCase());
+        return rightLevels.contains(lvl.toUpperCase());
     }
 
+    /**
+     * Востанавливает тест к изначальному состоянию
+     */
     public void resetTest() {
         curQuestion = null;
         curQuestionIndex = 0;
-        scores = 0;
+        score = 0;
+    }
+
+    /**
+     * Получение уровня языка у пользователя
+     * @return уровень языка пользователя
+     */
+    public String getLevel() {
+        if (score <= 7)
+            return "A1";
+        else if (score <= 14)
+            return "A2";
+        else if (score <= 21)
+            return "B1";
+        else if (score <= 28)
+            return "B2";
+        else if (score <= 35)
+            return "C1";
+        else
+            return "C2";
     }
 }

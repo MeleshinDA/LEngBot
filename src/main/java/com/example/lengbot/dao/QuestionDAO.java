@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Интерфейс работы баз данных для класса Question
+ */
 @Repository
 public class QuestionDAO {
     private final JdbcTemplate jdbcTemplate;
@@ -16,6 +19,10 @@ public class QuestionDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Метод получения теста из базы данных
+     * @return Готовый тест (список вопросов)
+     */
     public List<Question> GetTest()
     {
         return jdbcTemplate.query("SELECT * FROM test", new QuestionMapper());

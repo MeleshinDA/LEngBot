@@ -65,7 +65,7 @@ public class MessageHandler {
                 userStatesService.setIsEnteringLvl(false);
                 return new SendMessage(chatId, "Уровень сохранён");
             }
-            return new SendMessage(chatId, "Неправильно введён уровень, доступные варианты: A0, A1, A2, B1, B2");
+            return new SendMessage(chatId, "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2");
         }
 
         return switch (inputText) {
@@ -80,7 +80,8 @@ public class MessageHandler {
                 userStatesService.setIsEnteringLvl(true);
                 yield getLevelMessages(chatId);
             }
-            default -> new SendMessage(chatId, "Пожалуйста воспользуйтесь клавиатурой");
+            case "Помощь" -> new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
+            default -> new SendMessage(chatId, BotMessageEnum.NON_COMMAND_MESSAGE.getMessage());
         };
     }
 
@@ -99,7 +100,9 @@ public class MessageHandler {
 
         if (curQuestion == null) {
             userStatesService.setIsTesting(false);
-            sendMessage.setText("Тест пройден! Ваш балл: " + userTestService.getScores());
+            sendMessage.setText("Тест пройден! Ваш балл: " + userTestService.getScore() + " из 41" +
+                    "\nВаш уровень: " + userTestService.getLevel());
+            userDAO.UpdateUser(Long.parseLong(chatId), userTestService.getLevel());
             userTestService.resetTest();
         } else
             sendMessage.setText(curQuestion.getText() + "\n" + curQuestion.getPossibleAnswers());

@@ -1,10 +1,13 @@
 package com.example.lengbot.constants;
 
+/**
+ * Перечисление вожможных ответов бота
+ */
 public enum BotMessageEnum {
     HELP_MESSAGE("Помощь"),
-    NON_COMMAND_MESSAGE("Воспользуйтесь клавиатурой"),
-    EXCEPTION_UNKNOWN("ЧЕТА ПОШЛО НЕ ТАК"),
-    EXCEPTION_ILLEGAL_MESSAGE(" работаю только с текстом");
+    NON_COMMAND_MESSAGE("Пожалуйста воспользуйтесь клавиатурой"),
+    EXCEPTION_ILLEGAL_MESSAGE(" работаю только с текстом"),
+    EXCEPTION_UNKNOWN("Возникла ошибка");
 
     private final String message;
 
