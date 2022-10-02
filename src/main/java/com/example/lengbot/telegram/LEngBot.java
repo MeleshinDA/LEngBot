@@ -1,6 +1,6 @@
 package com.example.lengbot.telegram;
 
-import com.example.lengbot.API.UserTestService;
+import com.example.lengbot.Services.UserTestService;
 import com.example.lengbot.constants.BotMessageEnum;
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;

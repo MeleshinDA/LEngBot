@@ -1,4 +1,4 @@
-package com.example.lengbot.API;
+package com.example.lengbot.Services;
 
 import com.example.lengbot.models.Question;
 import lombok.Getter;
@@ -18,19 +18,18 @@ import java.util.Set;
 @Scope("prototype")
 public class UserTestService {
 
-    private List<Question> test;
-
+    private final Set<String> rightLevels = new HashSet<>();
     private int score;
-
     private int curQuestionIndex;
-    private Question curQuestion;
-    private Set<String> rightLevels = new HashSet<>();
+    private Question curQuestion = new Question();
+    private List<Question> test;
 
     public UserTestService() {
     }
 
     public UserTestService(List<Question> test) {
         this.test = new ArrayList<>(test);
+        rightLevels.add("A0");
         rightLevels.add("A1");
         rightLevels.add("A2");
         rightLevels.add("B1");
@@ -41,31 +40,35 @@ public class UserTestService {
 
     /**
      * Итерируется по вопросам теста
+     *
      * @return очередной вопрос
      */
-    public Question NextQuestion() {
-        if (curQuestionIndex <= test.size() - 1) {
+    public Question getNextQuestion() {
+        if (curQuestionIndex < test.size()) {
             curQuestion = test.get(curQuestionIndex++);
             return curQuestion;
-        } else
-            return null;
+        }
+
+        return null;
     }
 
     /**
      * Проверка правильности ответа
+     *
      * @param answer ответ пользователя на вопрос теста
      */
-    public void CheckAnswer(String answer) {
+    public void checkAnswer(String answer) {
         if (curQuestion.getRightAnswer().equals(answer))
             score += curQuestion.getWeight();
     }
 
     /**
      * Проверка правильности введенного уровня языка
+     *
      * @param lvl введенный уровень языка
      * @return правильность введенного
      */
-    public Boolean CheckUserLvl(String lvl) {
+    public Boolean isLvlCorrect(String lvl) {
         return rightLevels.contains(lvl.toUpperCase());
     }
 
@@ -80,10 +83,13 @@ public class UserTestService {
 
     /**
      * Получение уровня языка у пользователя
+     *
      * @return уровень языка пользователя
      */
     public String getLevel() {
-        if (score <= 7)
+        if (score <= 3)
+            return "A0";
+        else if (score <= 7)
             return "A1";
         else if (score <= 14)
             return "A2";

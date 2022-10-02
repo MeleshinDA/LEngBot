@@ -3,6 +3,7 @@ package com.example.lengbot.appconfig;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * Конфигурация базы данных

@@ -23,7 +23,7 @@ public class QuestionDAO {
      * Метод получения теста из базы данных
      * @return Готовый тест (список вопросов)
      */
-    public List<Question> GetTest()
+    public List<Question> getTest()
     {
         return jdbcTemplate.query("SELECT * FROM test", new QuestionMapper());
     }
