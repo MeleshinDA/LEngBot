@@ -1,4 +1,4 @@
-package com.example.lengbot.Services;
+package com.example.lengbot.services;
 
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
