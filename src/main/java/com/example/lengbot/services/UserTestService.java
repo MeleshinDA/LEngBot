@@ -1,4 +1,4 @@
-package com.example.lengbot.Services;
+package com.example.lengbot.services;
 
 import com.example.lengbot.models.Question;
 import lombok.Getter;

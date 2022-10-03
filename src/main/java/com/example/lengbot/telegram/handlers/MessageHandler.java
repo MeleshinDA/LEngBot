@@ -1,6 +1,6 @@
 package com.example.lengbot.telegram.handlers;
 
-import com.example.lengbot.Services.UserStatesService;
+import com.example.lengbot.services.UserStatesService;
 import com.example.lengbot.constants.BotMessageEnum;
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
@@ -20,8 +20,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @Component
 public class MessageHandler {
 
-    private ReplyKeyboardMaker replyKeyboardMaker;
-
     private UserDAO userDAO;
     private QuestionDAO questionDAO;
 
@@ -33,15 +31,14 @@ public class MessageHandler {
     }
 
     @Autowired
-    public MessageHandler(ReplyKeyboardMaker replyKeyboardMaker, UserDAO userDAO, QuestionDAO questionDAO) {
-        this.replyKeyboardMaker = replyKeyboardMaker;
+    public MessageHandler(UserDAO userDAO, QuestionDAO questionDAO) {
         this.userDAO = userDAO;
         this.questionDAO = questionDAO;
         this.userStatesService = new UserStatesService(userDAO, questionDAO);
     }
 
     public MessageHandler(MessageHandler that) {
-        this(that.getReplyKeyboardMaker(), that.getUserDAO(), that.getQuestionDAO());
+        this(that.getUserDAO(), that.getQuestionDAO());
     }
 
     /**
@@ -70,7 +67,9 @@ public class MessageHandler {
             case null -> throw new IllegalArgumentException();
             case "/start" -> {
                 userDAO.SaveUser(Integer.parseInt(chatId));
-                yield new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
+                SendMessage message = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
+                message.setReplyMarkup(ReplyKeyboardMaker.getMainMenuKeyboard());
+                yield message;
             }
             case "Пройти тест" -> {
                 userStatesService.setCurState(HandlersStates.TESTING);
@@ -80,8 +79,16 @@ public class MessageHandler {
                 userStatesService.setCurState(HandlersStates.ENTERINGLVL);
                 yield new SendMessage(chatId, "Введите Ваш уровень. Доступны: A0, A1, A2, B1, B2, C1, C2.");
             }
-            case "Помощь" -> new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
-            default -> new SendMessage(chatId, BotMessageEnum.NON_COMMAND_MESSAGE.getMessage());
+            case "Помощь" -> {
+                SendMessage message = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
+                message.setReplyMarkup(ReplyKeyboardMaker.getMainMenuKeyboard());
+                yield message;
+            }
+            default -> {
+                SendMessage message = new SendMessage(chatId, BotMessageEnum.NON_COMMAND_MESSAGE.getMessage());
+                message.setReplyMarkup(ReplyKeyboardMaker.getMainMenuKeyboard());
+                yield message;
+            }
         };
     }
 }
