@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 
 /**
- * Обработчик сообщений пользователя
+ * Обработчик сообщений пользователя.
  */
 @Getter
 @Component

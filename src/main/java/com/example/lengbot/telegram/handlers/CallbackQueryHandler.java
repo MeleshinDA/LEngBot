@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 @RequiredArgsConstructor
 public class CallbackQueryHandler {
 
-
     public BotApiMethod<?> processCallbackQuery(CallbackQuery buttonQuery){
         final String chatId = buttonQuery.getMessage().getChatId().toString();
 

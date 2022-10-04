@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Модель вопроса
+ * Модель вопроса.
  */
 @Getter
 @Setter

@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * Класс бота
+ * Класс бота.
  */
 @Getter
 @Setter

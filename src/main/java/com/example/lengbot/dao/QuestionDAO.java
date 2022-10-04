@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Интерфейс работы баз данных для класса Question
+ * Интерфейс работы баз данных для класса Question.
  */
 @Repository
 public class QuestionDAO {

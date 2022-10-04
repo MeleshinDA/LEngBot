@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
- * Интерфейс работы баз данных для класса User
+ * Интерфейс работы баз данных для класса User.
  */
 @Repository
 public class UserDAO {

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 
 /**
- * Преобразование полученых данных из базы данных в объект класса Question
+ * Преобразование полученых данных из базы данных в объект класса Question.
  */
 public class QuestionMapper implements RowMapper<Question> {
     @Override

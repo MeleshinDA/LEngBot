@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 
 /**
- * Конфигурация приложения
+ * Конфигурация приложения.
  */
 @Configuration
 @AllArgsConstructor

@@ -1,7 +1,7 @@
 package com.example.lengbot.constants;
 
 /**
- * Перечисление вожможных ответов бота
+ * Перечисление вожможных ответов бота.
  */
 public enum BotMessageEnum {
     HELP_MESSAGE("Бот для изучения английского языка.\n" +

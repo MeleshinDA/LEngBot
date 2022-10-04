@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * Класс работы с тестом пользователя
+ * Класс работы с тестом пользователя.
  */
 @Service
 @Getter

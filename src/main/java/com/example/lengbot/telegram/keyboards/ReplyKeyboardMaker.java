@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Создание главной клавиатуры бота
+ * Создание главной клавиатуры бота.
  */
 @Component
 public class ReplyKeyboardMaker {

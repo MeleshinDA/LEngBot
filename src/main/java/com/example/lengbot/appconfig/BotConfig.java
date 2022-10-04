@@ -16,5 +16,4 @@ public class BotConfig {
     private String botToken;
     @Value("${telegrambot.webHookPath}")
     private String webHookPath;
-
 }

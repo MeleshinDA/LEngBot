@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Модель пользователя бота
+ * Модель пользователя бота.
  */
 @Getter
 @Setter

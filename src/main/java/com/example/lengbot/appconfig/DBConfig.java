@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
- * Конфигурация базы данных
+ * Конфигурация базы данных.
  */
 @Getter
 @Configuration

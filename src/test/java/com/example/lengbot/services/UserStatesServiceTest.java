@@ -1,16 +1,11 @@
 package com.example.lengbot.services;
 
-import com.example.lengbot.dao.QuestionDAO;
-import com.example.lengbot.dao.UserDAO;
+
 import com.example.lengbot.models.Question;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Scope;
 import java.util.ArrayList;
 
 /**
- * Состояния пользователя
+ * Состояния пользователя.
  */
 
 @Getter
