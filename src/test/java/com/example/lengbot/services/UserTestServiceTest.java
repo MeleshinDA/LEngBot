@@ -17,7 +17,8 @@ class UserTestServiceTest {
         test.add(question);
         UserTestService userTestService = new UserTestService(test);
 
-        Question actual = userTestService.getNextQuestion();
+        userTestService.getNextQuestion();
+        Question actual = userTestService.getCurQuestion();
 
         assertEquals(actual, question);
     }
@@ -27,7 +28,8 @@ class UserTestServiceTest {
         List<Question> test = new ArrayList<Question>();
         UserTestService userTestService = new UserTestService(test);
 
-        Question actual = userTestService.getNextQuestion();
+        userTestService.getNextQuestion();
+        Question actual = userTestService.getCurQuestion();
 
         assertNull(actual);
     }
@@ -45,7 +47,8 @@ class UserTestServiceTest {
         List<Question> actual = new ArrayList<>();
         for (var i = 0; i < expected.size(); i++)
         {
-            actual.add(userTestService.getNextQuestion());
+            userTestService.getNextQuestion();
+            actual.add(userTestService.getCurQuestion());
         }
 
         assertEquals(actual, expected);
@@ -126,11 +129,10 @@ class UserTestServiceTest {
         test.add(new Question("Hello", "a b c d", "a", 2));
         UserTestService userTestService = new UserTestService(test);
         userTestService.getNextQuestion();
-        if (userTestService.getCurQuestionIndex() == 1)
-        {
-            userTestService.resetTest();
-            assertEquals(0, userTestService.getCurQuestionIndex());
-        }
+
+        userTestService.resetTest();
+        assertEquals(null, userTestService.getCurQuestion());
+
     }
 
     @Test
@@ -145,7 +147,8 @@ class UserTestServiceTest {
         UserTestService userTestService = new UserTestService(test);
         for (var i = 0; i < test.size(); ++i)
         {
-            Question curQuestion = userTestService.getNextQuestion();
+            userTestService.getNextQuestion();
+            Question curQuestion = userTestService.getCurQuestion();
             userTestService.checkAnswer(curQuestion.getRightAnswer());
         }
 

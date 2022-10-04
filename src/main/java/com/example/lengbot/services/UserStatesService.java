@@ -22,7 +22,6 @@ public class UserStatesService {
     private HandlersStates curState = HandlersStates.DEFAULT;
 
     private UserTestService userTestService;
-    private Boolean isFirstInp = true;
 
     public UserStatesService() {
         this.userTestService = new UserTestService(new ArrayList<>(QuestionDAO.getTest()));
@@ -30,38 +29,34 @@ public class UserStatesService {
 
     /**
      * Генерация ответа пользователю, если он проходит тест.
+     *
      * @param inputText Ввод пользователя.
-     * @param chatId Id чата с пользователем.
+     * @param chatId    Id чата с пользователем.
      * @return Строка с вопросом или, если тест закончен, результатом.
      */
     public String doTest(String inputText, String chatId) {
-        if (!isFirstInp)
-            userTestService.checkAnswer(inputText);
+        if (userTestService.getCurQuestion() != null)
+            userTestService.checkAnswer(inputText.toLowerCase());
 
-        isFirstInp = false;
-        Question nextQuestion = userTestService.getNextQuestion();
+        userTestService.getNextQuestion();
 
-        if (nextQuestion == null) {
+        if (userTestService.getCurQuestion() == null) {
             UserDAO.UpdateUser(Long.parseLong(chatId), userTestService.getLevel());
 
-            var scores = userTestService.getScore();
-            var lvl = userTestService.getLevel();
-            userTestService.resetTest();
-
-            isFirstInp = true;
             curState = HandlersStates.DEFAULT;
 
-            return "Тест пройден! Ваш балл: " + scores + " из 41" +
-                    "\nВаш уровень: " + lvl;
+            return "Тест пройден! Ваш балл: " + userTestService.getScore() + " из 41" +
+                    "\nВаш уровень: " + userTestService.getLevel();
         }
 
-        return nextQuestion.getText() + "\n" + nextQuestion.getPossibleAnswers();
+        return userTestService.getCurQuestion().getText() + "\n" + userTestService.getCurQuestion().getPossibleAnswers();
     }
 
     /**
      * Генерация ответа пользователю, если он вводит уровень.
+     *
      * @param inputText Ввод пользователя.
-     * @param chatId Id чата с пользователем.
+     * @param chatId    Id чата с пользователем.
      * @return Строка, информирующая об успешном сохранении уровня, или напоминание о корректной форме ввода.
      */
     public String enterLvl(String inputText, String chatId) {

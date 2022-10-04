@@ -1,10 +1,15 @@
 package com.example.lengbot.dao;
 
 
+import com.example.lengbot.JdbcTemplateForTests;
 import org.junit.jupiter.api.Test;
 
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -15,34 +20,18 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+@SpringBootTest
 class QuestionDAOTest {
-
-    private final String url = "based";
-    private final String userName = "floppa";
-    private final String password = "gigachad";
     @Test
     void QuestionDAO_TestConnection() throws SQLException {
-
-        Connection conn = DriverManager.getConnection(url, userName, password);
+        Connection conn = DriverManager.getConnection(JdbcTemplateForTests.getUrl(),
+                JdbcTemplateForTests.getUserName(),
+                JdbcTemplateForTests.getPassword());
         assertTrue(conn.isValid(10));
-    }
-
-    public DataSource postgreDataSource()
-    {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(url);
-        dataSource.setPassword(password);
-        dataSource.setUsername(userName);
-
-        return dataSource;
     }
     @Test
     void getTest_Successful() throws SQLException {
-
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(postgreDataSource());
-        QuestionDAO questionDAO = new QuestionDAO(jdbcTemplate);
-        var actual = questionDAO.getTest();
+        var actual = QuestionDAO.getTest();
         assertEquals(actual.size(), 15);
     }
 }

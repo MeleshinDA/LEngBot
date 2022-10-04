@@ -55,6 +55,7 @@ public class MessageHandler {
             }
             case "Пройти тест" -> {
                 userStatesService.setCurState(HandlersStates.TESTING);
+                userStatesService.getUserTestService().resetTest();
                 yield new SendMessage(chatId, "Решите следующие задания:\n" + userStatesService.doTest(inputText, chatId));
             }
             case "Ввести уровень" -> {

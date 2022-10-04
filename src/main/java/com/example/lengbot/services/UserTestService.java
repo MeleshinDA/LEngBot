@@ -5,10 +5,7 @@ import lombok.Getter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Класс работы с тестом пользователя
@@ -19,16 +16,18 @@ import java.util.Set;
 public class UserTestService {
 
     private final Set<String> rightLevels = new HashSet<>();
-    private int score;
-    private int curQuestionIndex;
-    private Question curQuestion = new Question();
+    private Question curQuestion;
     private List<Question> test;
+    private Iterator<Question> testIterator;
+
+    private int score;
 
     public UserTestService() {
     }
 
     public UserTestService(List<Question> test) {
         this.test = new ArrayList<>(test);
+        this.testIterator = test.listIterator();
         rightLevels.add("A0");
         rightLevels.add("A1");
         rightLevels.add("A2");
@@ -43,13 +42,12 @@ public class UserTestService {
      *
      * @return очередной вопрос
      */
-    public Question getNextQuestion() {
-        if (curQuestionIndex < test.size()) {
-            curQuestion = test.get(curQuestionIndex++);
-            return curQuestion;
+    public void getNextQuestion() {
+        if (testIterator.hasNext()) {
+            curQuestion = testIterator.next();
         }
-
-        return null;
+        else
+            curQuestion = null;
     }
 
     /**
@@ -76,8 +74,8 @@ public class UserTestService {
      * Востанавливает тест к изначальному состоянию
      */
     public void resetTest() {
+        testIterator = test.listIterator();
         curQuestion = null;
-        curQuestionIndex = 0;
         score = 0;
     }
 

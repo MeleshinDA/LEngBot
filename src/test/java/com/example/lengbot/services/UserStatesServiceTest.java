@@ -5,35 +5,39 @@ import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.models.Question;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class UserStatesServiceTest {
-
     @Test
-    void doTest_OnInputWhenNullReturnResultMessage() {
-        var mockQuestionDAO = Mockito.mock(QuestionDAO.class);
-        var mockUserDAO = Mockito.mock(UserDAO.class);
+    void doTest_OnEndOfTestReturnResultMessage() {
+        UserStatesService userStatesService = new UserStatesService();
 
-        UserStatesService userStatesService = new UserStatesService(mockUserDAO, mockQuestionDAO);
-        List<Question> test = new ArrayList<>();
+        for (Question question: userStatesService.getUserTestService().getTest())
+        {
+            userStatesService.doTest("a", "2");
+        }
 
-        userStatesService.setUserTestService(new UserTestService(test));
         String actual = userStatesService.doTest("a", "2");
         String expected = "Тест пройден! Ваш балл: " + userStatesService.getUserTestService().getScore() + " из 41" +
                 "\nВаш уровень: " + userStatesService.getUserTestService().getLevel();
+
         assertEquals(expected, actual);
 
     }
 
     @Test
     void doTest_OnInputReturnOtherQuestion() {
-        var mockQuestionDAO = Mockito.mock(QuestionDAO.class);
-        var mockUserDAO = Mockito.mock(UserDAO.class);
-        UserStatesService userStatesService = new UserStatesService(mockUserDAO, mockQuestionDAO);
+        UserStatesService userStatesService = new UserStatesService();
         List<Question> test = new ArrayList<>();
         test.add(new Question("Hello", "a b c d", "a", 2));
         userStatesService.setUserTestService(new UserTestService(test));
@@ -45,10 +49,7 @@ class UserStatesServiceTest {
 
     @Test
     void doTest_FullScoresAvailable() {
-        var mockQuestionDAO = Mockito.mock(QuestionDAO.class);
-        var mockUserDAO = Mockito.mock(UserDAO.class);
-
-        UserStatesService userStatesService = new UserStatesService(mockUserDAO, mockQuestionDAO);
+        UserStatesService userStatesService = new UserStatesService();
         List<Question> test = new ArrayList<>();
         test.add(new Question("Hello", "a b c d", "a", 20));
         test.add(new Question("Night", "a b c d", "b", 21));
@@ -71,10 +72,7 @@ class UserStatesServiceTest {
      */
     @Test
     void doTest_SecondTime() {
-        var mockQuestionDAO = Mockito.mock(QuestionDAO.class);
-        var mockUserDAO = Mockito.mock(UserDAO.class);
-
-        UserStatesService userStatesService = new UserStatesService(mockUserDAO, mockQuestionDAO);
+        UserStatesService userStatesService = new UserStatesService();
         List<Question> test = new ArrayList<>();
         test.add(new Question("Hello", "a b c d", "a", 20));
         test.add(new Question("Night", "a b c d", "b", 21));
@@ -96,9 +94,7 @@ class UserStatesServiceTest {
 
     @Test
     void enterLvl_OnCorrectLvlInput() {
-        var mockQuestionDAO = Mockito.mock(QuestionDAO.class);
-        var mockUserDAO = Mockito.mock(UserDAO.class);
-        UserStatesService userStatesService = new UserStatesService(mockUserDAO, mockQuestionDAO);
+        UserStatesService userStatesService = new UserStatesService();
         String actual = userStatesService.enterLvl("A2", "2");
         String expected = "Уровень сохранён";
         assertEquals(expected, actual);
@@ -106,9 +102,7 @@ class UserStatesServiceTest {
 
     @Test
     void enterLvl_OnInCorrectLvlInput() {
-        var mockQuestionDAO = Mockito.mock(QuestionDAO.class);
-        var mockUserDAO = Mockito.mock(UserDAO.class);
-        UserStatesService userStatesService = new UserStatesService(mockUserDAO, mockQuestionDAO);
+        UserStatesService userStatesService = new UserStatesService();
         String actual = userStatesService.enterLvl("BB5", "2");
         String expected = "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2";
         assertEquals(expected, actual);
