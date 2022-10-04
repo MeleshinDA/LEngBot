@@ -1,10 +1,8 @@
 package com.example.lengbot.dao;
 
 
-import com.example.lengbot.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,18 +10,18 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class UserDAO {
-    private final JdbcTemplate jdbcTemplate;
+    private static JdbcTemplate jdbcTemplate;
 
     @Autowired
     public UserDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        UserDAO.jdbcTemplate = jdbcTemplate;
     }
 
     /**
      * Метод внесения нового пользователя в базу данных
      * @param chatId чат пользователя
      */
-        public void SaveUser(long chatId)
+        public static void SaveUser(long chatId)
     {
         jdbcTemplate.update("INSERT INTO users(id, lvl) VALUES(?, ?)", chatId, "A0");
     }
@@ -33,7 +31,7 @@ public class UserDAO {
      * @param chatId идентификатор пользователя
      * @param lvl уровень английского языка пользователя
      */
-    public void UpdateUser(long chatId, String lvl)
+    public static void UpdateUser(long chatId, String lvl)
     {
         jdbcTemplate.update("UPDATE users SET lvl=? WHERE id=?", lvl, chatId);
     }

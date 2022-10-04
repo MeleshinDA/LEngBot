@@ -22,15 +22,10 @@ public class UserStatesService {
     private HandlersStates curState = HandlersStates.DEFAULT;
 
     private UserTestService userTestService;
-    private final QuestionDAO questionDAO;
-
-    private final UserDAO userDAO;
     private Boolean isFirstInp = true;
 
-    public UserStatesService(UserDAO userDAO, QuestionDAO questionDAO) {
-        this.userDAO = userDAO;
-        this.questionDAO = questionDAO;
-        this.userTestService = new UserTestService(new ArrayList<>(this.questionDAO.getTest()));
+    public UserStatesService() {
+        this.userTestService = new UserTestService(new ArrayList<>(QuestionDAO.getTest()));
     }
 
     /**
@@ -47,7 +42,7 @@ public class UserStatesService {
         Question nextQuestion = userTestService.getNextQuestion();
 
         if (nextQuestion == null) {
-            userDAO.UpdateUser(Long.parseLong(chatId), userTestService.getLevel());
+            UserDAO.UpdateUser(Long.parseLong(chatId), userTestService.getLevel());
 
             var scores = userTestService.getScore();
             var lvl = userTestService.getLevel();
@@ -71,7 +66,7 @@ public class UserStatesService {
      */
     public String enterLvl(String inputText, String chatId) {
         if (userTestService.isLvlCorrect(inputText)) {
-            userDAO.UpdateUser(Integer.parseInt(chatId), inputText.toUpperCase());
+            UserDAO.UpdateUser(Integer.parseInt(chatId), inputText.toUpperCase());
             curState = HandlersStates.DEFAULT;
             return "Уровень сохранён";
         }

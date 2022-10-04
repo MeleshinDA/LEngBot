@@ -2,11 +2,9 @@ package com.example.lengbot.telegram.handlers;
 
 import com.example.lengbot.services.UserStatesService;
 import com.example.lengbot.constants.BotMessageEnum;
-import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,26 +17,10 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @Getter
 @Component
 public class MessageHandler {
-
-    private UserDAO userDAO;
-    private QuestionDAO questionDAO;
-
-    private UserStatesService userStatesService;
-
+    private final UserStatesService userStatesService;
 
     public MessageHandler() {
-
-    }
-
-    @Autowired
-    public MessageHandler(UserDAO userDAO, QuestionDAO questionDAO) {
-        this.userDAO = userDAO;
-        this.questionDAO = questionDAO;
-        this.userStatesService = new UserStatesService(userDAO, questionDAO);
-    }
-
-    public MessageHandler(MessageHandler that) {
-        this(that.getUserDAO(), that.getQuestionDAO());
+        this.userStatesService = new UserStatesService();
     }
 
     /**
@@ -52,7 +34,7 @@ public class MessageHandler {
         return switch (userStatesService.getCurState()) {
             case DEFAULT -> handleMessage(inputText, chatId);
             case TESTING -> new SendMessage(chatId, userStatesService.doTest(inputText, chatId));
-            case ENTERINGLVL -> new SendMessage(chatId, userStatesService.enterLvl(inputText, chatId));
+            case ENTERING_LEVEL -> new SendMessage(chatId, userStatesService.enterLvl(inputText, chatId));
         };
     }
 
@@ -66,7 +48,7 @@ public class MessageHandler {
         return switch (inputText) {
             case null -> throw new IllegalArgumentException();
             case "/start" -> {
-                userDAO.SaveUser(Integer.parseInt(chatId));
+                UserDAO.SaveUser(Integer.parseInt(chatId));
                 SendMessage message = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
                 message.setReplyMarkup(ReplyKeyboardMaker.getMainMenuKeyboard());
                 yield message;
@@ -76,7 +58,7 @@ public class MessageHandler {
                 yield new SendMessage(chatId, "Решите следующие задания:\n" + userStatesService.doTest(inputText, chatId));
             }
             case "Ввести уровень" -> {
-                userStatesService.setCurState(HandlersStates.ENTERINGLVL);
+                userStatesService.setCurState(HandlersStates.ENTERING_LEVEL);
                 yield new SendMessage(chatId, "Введите Ваш уровень. Доступны: A0, A1, A2, B1, B2, C1, C2.");
             }
             case "Помощь" -> {

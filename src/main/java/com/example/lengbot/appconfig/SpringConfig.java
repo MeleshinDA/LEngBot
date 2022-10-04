@@ -2,7 +2,6 @@ package com.example.lengbot.appconfig;
 
 import com.example.lengbot.telegram.LEngBot;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
-import com.example.lengbot.telegram.handlers.MessageHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,9 +47,9 @@ public class SpringConfig {
     }
 
     @Bean
-    public LEngBot lEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler, MessageHandler messageHandler)
+    public LEngBot lEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler)
     {
-        LEngBot lEngBot = new LEngBot(setWebhook, callbackQueryHandler, messageHandler);
+        LEngBot lEngBot = new LEngBot(setWebhook, callbackQueryHandler);
 
         lEngBot.setBotPath(botConfig.getWebHookPath());
         lEngBot.setBotUsername(botConfig.getBotUsername());
