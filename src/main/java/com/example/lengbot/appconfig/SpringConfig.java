@@ -1,11 +1,8 @@
 package com.example.lengbot.appconfig;
 
-import com.example.lengbot.dao.QuestionDAO;
-import com.example.lengbot.dao.UserDAO;
-import com.example.lengbot.models.Question;
+
 import com.example.lengbot.telegram.LEngBot;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
-import com.example.lengbot.telegram.handlers.MessageHandler;
 import com.example.lengbot.telegram.handlers.MessageHandlerFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

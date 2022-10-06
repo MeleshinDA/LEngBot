@@ -5,7 +5,6 @@ import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.telegram.handlers.HandlersStates;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.annotation.Scope;
 
 import java.util.ArrayList;
 
@@ -14,14 +13,13 @@ import java.util.ArrayList;
  */
 
 @Getter
-@Setter
-@Scope("prototype")
 public class UserStatesService {
 
+  @Setter
   private HandlersStates curState = HandlersStates.DEFAULT;
 
-  private UserTestService userTestService;
-  private UserDAO userDAO;
+  private final UserTestService userTestService;
+  private final UserDAO userDAO;
 
   public UserStatesService(UserDAO userDAO, QuestionDAO questionDAO) {
     this.userDAO = userDAO;

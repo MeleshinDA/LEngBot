@@ -2,7 +2,6 @@ package com.example.lengbot.services;
 
 import com.example.lengbot.models.Question;
 import lombok.Getter;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,7 +11,6 @@ import java.util.*;
  */
 @Service
 @Getter
-@Scope("prototype")
 public class UserTestService {
 
   private final Set<String> rightLevels = new HashSet<>();

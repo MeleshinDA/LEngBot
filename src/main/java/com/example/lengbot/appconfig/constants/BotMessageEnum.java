@@ -1,4 +1,4 @@
-package com.example.lengbot.constants;
+package com.example.lengbot.appconfig.constants;
 
 /**
  * Перечисление вожможных ответов бота

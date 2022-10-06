@@ -2,10 +2,9 @@ package com.example.lengbot.telegram.handlers;
 
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.services.UserStatesService;
-import com.example.lengbot.constants.BotMessageEnum;
+import com.example.lengbot.appconfig.constants.BotMessageEnum;
 import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
-import lombok.Getter;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -14,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 /**
  * Обработчик сообщений пользователя
  */
-@Getter
+
 public class MessageHandler {
 
   private final UserStatesService userStatesService;

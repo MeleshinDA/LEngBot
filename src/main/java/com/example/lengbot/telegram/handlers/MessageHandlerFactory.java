@@ -6,15 +6,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MessageHandlerFactory {
+
   private final UserDAO userDAO;
   private final QuestionDAO questionDAO;
 
-  public MessageHandlerFactory(UserDAO userDAO, QuestionDAO questionDAO){
+  public MessageHandlerFactory(UserDAO userDAO, QuestionDAO questionDAO) {
     this.userDAO = userDAO;
     this.questionDAO = questionDAO;
   }
 
-  public MessageHandler createMessageHandler(){
+  public MessageHandler createMessageHandler() {
     return new MessageHandler(this.userDAO, this.questionDAO);
   }
 }

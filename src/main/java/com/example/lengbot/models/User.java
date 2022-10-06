@@ -2,15 +2,11 @@ package com.example.lengbot.models;
 
 
 import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
 
 /**
  * Модель пользователя бота
  */
 @Getter
-@Setter
 public class User {
 
   /**
