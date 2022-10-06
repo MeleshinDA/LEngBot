@@ -2,7 +2,6 @@ package com.example.lengbot.services;
 
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
-import com.example.lengbot.models.Question;
 import com.example.lengbot.telegram.handlers.HandlersStates;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,52 +18,55 @@ import java.util.ArrayList;
 @Scope("prototype")
 public class UserStatesService {
 
-    private HandlersStates curState = HandlersStates.DEFAULT;
+  private HandlersStates curState = HandlersStates.DEFAULT;
 
-    private UserTestService userTestService;
+  private UserTestService userTestService;
 
-    public UserStatesService() {
-        this.userTestService = new UserTestService(new ArrayList<>(QuestionDAO.getTest()));
+  public UserStatesService() {
+    this.userTestService = new UserTestService(new ArrayList<>(QuestionDAO.getTest()));
+  }
+
+  /**
+   * Генерация ответа пользователю, если он проходит тест.
+   *
+   * @param inputText Ввод пользователя.
+   * @param chatId    Id чата с пользователем.
+   * @return Строка с вопросом или, если тест закончен, результатом.
+   */
+  public String doTest(String inputText, String chatId) {
+      if (userTestService.getCurQuestion() != null) {
+          userTestService.checkAnswer(inputText.toLowerCase());
+      }
+
+    userTestService.getNextQuestion();
+
+    if (userTestService.getCurQuestion() == null) {
+      UserDAO.updateUser(Long.parseLong(chatId), userTestService.getLevel());
+
+      curState = HandlersStates.DEFAULT;
+
+      return "Тест пройден! Ваш балл: " + userTestService.getScore() + " из 41" +
+          "\nВаш уровень: " + userTestService.getLevel();
     }
 
-    /**
-     * Генерация ответа пользователю, если он проходит тест.
-     *
-     * @param inputText Ввод пользователя.
-     * @param chatId    Id чата с пользователем.
-     * @return Строка с вопросом или, если тест закончен, результатом.
-     */
-    public String doTest(String inputText, String chatId) {
-        if (userTestService.getCurQuestion() != null)
-            userTestService.checkAnswer(inputText.toLowerCase());
+    return userTestService.getCurQuestion().getText() + "\n" + userTestService.getCurQuestion()
+        .getPossibleAnswers();
+  }
 
-        userTestService.getNextQuestion();
-
-        if (userTestService.getCurQuestion() == null) {
-            UserDAO.UpdateUser(Long.parseLong(chatId), userTestService.getLevel());
-
-            curState = HandlersStates.DEFAULT;
-
-            return "Тест пройден! Ваш балл: " + userTestService.getScore() + " из 41" +
-                    "\nВаш уровень: " + userTestService.getLevel();
-        }
-
-        return userTestService.getCurQuestion().getText() + "\n" + userTestService.getCurQuestion().getPossibleAnswers();
+  /**
+   * Генерация ответа пользователю, если он вводит уровень.
+   *
+   * @param inputText Ввод пользователя.
+   * @param chatId    Id чата с пользователем.
+   * @return Строка, информирующая об успешном сохранении уровня, или напоминание о корректной форме
+   * ввода.
+   */
+  public String enterLvl(String inputText, String chatId) {
+    if (userTestService.isLvlCorrect(inputText)) {
+      UserDAO.updateUser(Integer.parseInt(chatId), inputText.toUpperCase());
+      curState = HandlersStates.DEFAULT;
+      return "Уровень сохранён";
     }
-
-    /**
-     * Генерация ответа пользователю, если он вводит уровень.
-     *
-     * @param inputText Ввод пользователя.
-     * @param chatId    Id чата с пользователем.
-     * @return Строка, информирующая об успешном сохранении уровня, или напоминание о корректной форме ввода.
-     */
-    public String enterLvl(String inputText, String chatId) {
-        if (userTestService.isLvlCorrect(inputText)) {
-            UserDAO.UpdateUser(Integer.parseInt(chatId), inputText.toUpperCase());
-            curState = HandlersStates.DEFAULT;
-            return "Уровень сохранён";
-        }
-        return "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2";
-    }
+    return "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2";
+  }
 }

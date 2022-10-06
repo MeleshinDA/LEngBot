@@ -12,19 +12,20 @@ import java.util.List;
  */
 @Repository
 public class QuestionDAO {
-    private static JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public QuestionDAO(JdbcTemplate jdbcTemplate) {
-        QuestionDAO.jdbcTemplate = jdbcTemplate;
-    }
+  private static JdbcTemplate jdbcTemplate;
 
-    /**
-     * Метод получения теста из базы данных
-     * @return Готовый тест (список вопросов)
-     */
-    public static List<Question> getTest()
-    {
-        return jdbcTemplate.query("SELECT * FROM test", new QuestionMapper());
-    }
+  @Autowired
+  public QuestionDAO(JdbcTemplate jdbcTemplate) {
+    QuestionDAO.jdbcTemplate = jdbcTemplate;
+  }
+
+  /**
+   * Метод получения теста из базы данных
+   *
+   * @return Готовый тест (список вопросов)
+   */
+  public static List<Question> getTest() {
+    return jdbcTemplate.query("SELECT * FROM test", new QuestionMapper());
+  }
 }

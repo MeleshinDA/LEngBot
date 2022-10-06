@@ -13,47 +13,46 @@ import javax.sql.DataSource;
 
 
 /**
- * Конфигурация приложения
+ * Конфигурация приложения.
  */
 @Configuration
 @AllArgsConstructor
 public class SpringConfig {
-    private final BotConfig botConfig;
 
-    private final DBConfig dbConfig;
+  private final BotConfig botConfig;
 
-    @Bean
-    public DataSource dataSource(){
-        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-        driverManagerDataSource.setDriverClassName(dbConfig.getDriver());
-        driverManagerDataSource.setUrl(dbConfig.getURL());
-        driverManagerDataSource.setUsername(dbConfig.getUserName());
-        driverManagerDataSource.setPassword(dbConfig.getPassword());
-        return driverManagerDataSource;
-    }
+  private final DBConfig dbConfig;
 
-    @Bean
-    public JdbcTemplate jdbcTemplate(){
-        return new JdbcTemplate(dataSource());
-    }
+  @Bean
+  public DataSource dataSource() {
+    DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+    driverManagerDataSource.setDriverClassName(dbConfig.getDriver());
+    driverManagerDataSource.setUrl(dbConfig.getURL());
+    driverManagerDataSource.setUsername(dbConfig.getUserName());
+    driverManagerDataSource.setPassword(dbConfig.getPassword());
+    return driverManagerDataSource;
+  }
 
-    @Bean
-    public SetWebhook setWebhook()
-    {
-        return SetWebhook
-                .builder()
-                .url(botConfig.getWebHookPath())
-                .build();
-    }
+  @Bean
+  public JdbcTemplate jdbcTemplate() {
+    return new JdbcTemplate(dataSource());
+  }
 
-    @Bean
-    public LEngBot lEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler)
-    {
-        LEngBot lEngBot = new LEngBot(setWebhook, callbackQueryHandler);
+  @Bean
+  public SetWebhook setWebhook() {
+    return SetWebhook
+        .builder()
+        .url(botConfig.getWebHookPath())
+        .build();
+  }
 
-        lEngBot.setBotPath(botConfig.getWebHookPath());
-        lEngBot.setBotUsername(botConfig.getBotUsername());
-        lEngBot.setBotToken(botConfig.getBotToken());
-        return lEngBot;
-    }
+  @Bean
+  public LEngBot lEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler) {
+    LEngBot lEngBot = new LEngBot(setWebhook, callbackQueryHandler);
+
+    lEngBot.setBotPath(botConfig.getWebHookPath());
+    lEngBot.setBotUsername(botConfig.getBotUsername());
+    lEngBot.setBotToken(botConfig.getBotToken());
+    return lEngBot;
+  }
 }
