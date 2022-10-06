@@ -10,12 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Configuration
 public class BotConfig {
-
-  @Value("${telegrambot.botUsername}")
-  private String botUsername;
-  @Value("${telegrambot.botToken}")
-  private String botToken;
-  @Value("${telegrambot.webHookPath}")
-  private String webHookPath;
+    @Value("${telegrambot.botUsername}")
+    private String botUsername;
+    @Value("${telegrambot.botToken}")
+    private String botToken;
+    @Value("${telegrambot.webHookPath}")
+    private String webHookPath;
 
 }

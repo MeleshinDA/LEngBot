@@ -13,22 +13,21 @@ import java.util.List;
  */
 @Component
 public class ReplyKeyboardMaker {
+    public static ReplyKeyboardMarkup getMainMenuKeyboard(){
+        KeyboardRow keyboardButtons = new KeyboardRow();
+        keyboardButtons.add(new KeyboardButton("Пройти тест"));
+        keyboardButtons.add(new KeyboardButton("Ввести уровень"));
+        keyboardButtons.add(new KeyboardButton("Помощь"));
 
-  public static ReplyKeyboardMarkup getMainMenuKeyboard() {
-    KeyboardRow keyboardButtons = new KeyboardRow();
-    keyboardButtons.add(new KeyboardButton("Пройти тест"));
-    keyboardButtons.add(new KeyboardButton("Ввести уровень"));
-    keyboardButtons.add(new KeyboardButton("Помощь"));
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        keyboard.add(keyboardButtons);
 
-    List<KeyboardRow> keyboard = new ArrayList<>();
-    keyboard.add(keyboardButtons);
+        final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(keyboard);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
 
-    final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-    replyKeyboardMarkup.setKeyboard(keyboard);
-    replyKeyboardMarkup.setSelective(true);
-    replyKeyboardMarkup.setResizeKeyboard(true);
-    replyKeyboardMarkup.setOneTimeKeyboard(false);
-
-    return replyKeyboardMarkup;
-  }
+        return replyKeyboardMarkup;
+    }
 }

@@ -12,23 +12,23 @@ import java.util.List;
 @Getter
 @Setter
 public class User {
+    /**
+     * Идентификатор чата в телеграмме
+     */
+    private String id;
+    /**
+     * Уровень английского языка пользователя
+     */
+    private String lvl;
 
-  /**
-   * Идентификатор чата в телеграмме
-   */
-  private String id;
-  /**
-   * Уровень английского языка пользователя
-   */
-  private String lvl;
+    public User()
+    {
 
-  public User() {
-
-  }
-
-  public User(String id, String lvl) {
-    this.id = id;
-    this.lvl = lvl;
-  }
+    }
+    public User(String id, String lvl)
+    {
+        this.id = id;
+        this.lvl = lvl;
+    }
 
 }

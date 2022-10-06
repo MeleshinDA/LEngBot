@@ -6,18 +6,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
- * Конфигурация базы данных.
+ * Конфигурация базы данных
  */
 @Getter
 @Configuration
 public class DBConfig {
-
-  @Value("${spring.datasource.driver-class-name}")
-  private String driver;
-  @Value("${spring.datasource.url}")
-  private String URL;
-  @Value("${spring.datasource.username}")
-  private String userName;
-  @Value("${spring.datasource.password}")
-  private String password;
+    @Value("${db.driverClassName}")
+    private String driver;
+    @Value("${db.url}")
+    private String URL;
+    @Value("${db.username}")
+    private String userName;
+    @Value("${db.password}")
+    private String password;
 }
