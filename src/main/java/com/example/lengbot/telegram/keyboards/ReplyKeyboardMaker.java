@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Component
 public class ReplyKeyboardMaker {
-    public static ReplyKeyboardMarkup getMainMenuKeyboard(){
+    public static ReplyKeyboardMarkup getMainMenuKeyboard(){ // Убрать компонент
         KeyboardRow keyboardButtons = new KeyboardRow();
         keyboardButtons.add(new KeyboardButton("Пройти тест"));
         keyboardButtons.add(new KeyboardButton("Ввести уровень"));

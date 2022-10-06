@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @Getter
 @Component
 public class MessageHandler {
-    private final UserStatesService userStatesService;
+    private final UserStatesService userStatesService; //getter не нужен
 
     public MessageHandler() {
         this.userStatesService = new UserStatesService();

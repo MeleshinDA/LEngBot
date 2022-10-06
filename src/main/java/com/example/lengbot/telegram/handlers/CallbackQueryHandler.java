@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 @Component
-@RequiredArgsConstructor
+@RequiredArgsConstructor // Убрать
 public class CallbackQueryHandler {
 
     public BotApiMethod<?> processCallbackQuery(CallbackQuery buttonQuery){
