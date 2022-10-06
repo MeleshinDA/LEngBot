@@ -7,14 +7,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @RestController
 public class WebHookController {
-    private final LEngBot telegramBot;
 
-    public WebHookController(LEngBot telegramBot) {
-        this.telegramBot = telegramBot;
-    }
+  private final LEngBot telegramBot;
 
-    @PostMapping("/")
-    public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
-        return telegramBot.onWebhookUpdateReceived(update);
-    }
+  public WebHookController(LEngBot telegramBot) {
+    this.telegramBot = telegramBot;
+  }
+
+  @PostMapping("/")
+  public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
+    return telegramBot.onWebhookUpdateReceived(update);
+  }
 }

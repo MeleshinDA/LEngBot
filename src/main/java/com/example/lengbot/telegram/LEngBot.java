@@ -23,50 +23,53 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 @Setter
 public class LEngBot extends SpringWebhookBot {
-    private String botUsername;
-    private String botToken;
-    private String botPath;
-    private ConcurrentHashMap<Long, MessageHandler> usersHandlers;
-    private CallbackQueryHandler callbackQueryHandler;
+
+  private String botUsername;
+  private String botToken;
+  private String botPath;
+  private ConcurrentHashMap<Long, MessageHandler> usersHandlers;
+  private CallbackQueryHandler callbackQueryHandler;
 
 
-    public LEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler) {
-        super(setWebhook);
-        this.usersHandlers = new ConcurrentHashMap<>();
-        this.callbackQueryHandler = callbackQueryHandler;
+  public LEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler) {
+    super(setWebhook);
+    this.usersHandlers = new ConcurrentHashMap<>();
+    this.callbackQueryHandler = callbackQueryHandler;
 
+  }
+
+
+  @Override
+  public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+    try {
+      return handleUpdate(update);
+    } catch (IllegalArgumentException e) {
+      return new SendMessage(update.getMessage().getChatId().toString(),
+          BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE.getMessage());
     }
+  }
 
 
-    @Override
-    public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        try {
-            return handleUpdate(update);
-        } catch (IllegalArgumentException e) {
-            return new SendMessage(update.getMessage().getChatId().toString(),
-                    BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE.getMessage());
-        }
+  /**
+   * @param update обновление от пользователя
+   * @return обработанное ботом сообщение
+   */
+  private BotApiMethod<?> handleUpdate(Update update) {
+    long chatId = update.getMessage().getChatId();
+
+    if (!usersHandlers.containsKey(chatId)) {
+      usersHandlers.put(chatId, );
     }
-
-
-    /**
-     * @param update обновление от пользователя
-     * @return обработанное ботом сообщение
-     */
-    private BotApiMethod<?> handleUpdate(Update update) {
-        long chatId = update.getMessage().getChatId();
-
-        if (!usersHandlers.containsKey(chatId))
-            usersHandlers.put(chatId, new MessageHandler());
-        MessageHandler usersHandler = usersHandlers.get(chatId);
-        if (update.hasCallbackQuery()) {
-            CallbackQuery callbackQuery = update.getCallbackQuery();
-            return callbackQueryHandler.processCallbackQuery(callbackQuery);
-        } else {
-            Message message = update.getMessage();
-            if (message != null)
-                return usersHandler.answerMessage(update.getMessage());
-        }
-        return null;
+    MessageHandler usersHandler = usersHandlers.get(chatId);
+    if (update.hasCallbackQuery()) {
+      CallbackQuery callbackQuery = update.getCallbackQuery();
+      return callbackQueryHandler.processCallbackQuery(callbackQuery);
+    } else {
+      Message message = update.getMessage();
+      if (message != null) {
+        return usersHandler.answerMessage(update.getMessage());
+      }
     }
+    return null;
+  }
 }
