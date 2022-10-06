@@ -11,15 +11,16 @@ import java.sql.SQLException;
  * Преобразование полученых данных из базы данных в объект класса Question
  */
 public class QuestionMapper implements RowMapper<Question> {
-    @Override
-    public Question mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Question question = new Question();
 
-        question.setText(rs.getString("text"));
-        question.setPossibleAnswers(rs.getString("possibleAnswers"));
-        question.setRightAnswer(rs.getString("rightAnswer"));
-        question.setWeight(rs.getInt("weight"));
+  @Override
+  public Question mapRow(ResultSet rs, int rowNum) throws SQLException {
+    Question question = new Question();
 
-        return question;
-    }
+    question.setText(rs.getString("text"));
+    question.setPossibleAnswers(rs.getString("possibleAnswers"));
+    question.setRightAnswer(rs.getString("rightAnswer"));
+    question.setWeight(rs.getInt("weight"));
+
+    return question;
+  }
 }

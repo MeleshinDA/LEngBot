@@ -1,12 +1,10 @@
 package com.example.lengbot.telegram;
 
-import com.example.lengbot.services.UserTestService;
-import com.example.lengbot.constants.BotMessageEnum;
-import com.example.lengbot.dao.QuestionDAO;
-import com.example.lengbot.dao.UserDAO;
+
+import com.example.lengbot.appconfig.constants.BotMessageEnum;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
 import com.example.lengbot.telegram.handlers.MessageHandler;
-import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
+import com.example.lengbot.telegram.handlers.MessageHandlerFactory;
 import lombok.Getter;
 import lombok.Setter;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -26,56 +24,55 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 @Setter
 public class LEngBot extends SpringWebhookBot {
-    private String botUsername;
-    private String botToken;
-    private String botPath;
-    private ConcurrentHashMap<Long, MessageHandler> usersHandlers;
-    private CallbackQueryHandler callbackQueryHandler;
-    private MessageHandler messageHandler;
 
-    ReplyKeyboardMaker replyKeyboardMaker;
-    UserDAO userDAO;
-    QuestionDAO questionDAO;
-    UserTestService userTestService;
+  private String botUsername;
+  private String botToken;
+  private String botPath;
+  private ConcurrentHashMap<Long, MessageHandler> usersHandlers;
+  private CallbackQueryHandler callbackQueryHandler;
+  private MessageHandlerFactory messageHandlerFactory;
 
 
-    public LEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler, MessageHandler messageHandler) {
-        super(setWebhook);
-        this.usersHandlers = new ConcurrentHashMap<>();
-        this.callbackQueryHandler = callbackQueryHandler;
-        this.messageHandler = messageHandler;
+  public LEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler,
+      MessageHandlerFactory messageHandlerFactory) {
+    super(setWebhook);
+    this.usersHandlers = new ConcurrentHashMap<>();
+    this.callbackQueryHandler = callbackQueryHandler;
+    this.messageHandlerFactory = messageHandlerFactory;
+  }
+
+
+  @Override
+  public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+    try {
+      return handleUpdate(update);
+    } catch (IllegalArgumentException e) {
+      return new SendMessage(update.getMessage().getChatId().toString(),
+          BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE.getMessage());
     }
+  }
 
 
-    @Override
-    public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        try {
-            return handleUpdate(update);
-        } catch (IllegalArgumentException e) {
-            return new SendMessage(update.getMessage().getChatId().toString(),
-                    BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE.getMessage());
-        }
+  /**
+   * @param update обновление от пользователя
+   * @return обработанное ботом сообщение
+   */
+  private BotApiMethod<?> handleUpdate(Update update) {
+    long chatId = update.getMessage().getChatId();
+
+    if (!usersHandlers.containsKey(chatId)) {
+      usersHandlers.put(chatId, messageHandlerFactory.createMessageHandler());
     }
-
-
-    /**
-     * @param update обновление от пользователя
-     * @return обработанное ботом сообщение
-     */
-    private BotApiMethod<?> handleUpdate(Update update) {
-        long chatId = update.getMessage().getChatId();
-
-        if (!usersHandlers.containsKey(chatId))
-            usersHandlers.put(chatId, new MessageHandler(messageHandler));
-        MessageHandler usersHandler = usersHandlers.get(chatId);
-        if (update.hasCallbackQuery()) {
-            CallbackQuery callbackQuery = update.getCallbackQuery();
-            return callbackQueryHandler.processCallbackQuery(callbackQuery);
-        } else {
-            Message message = update.getMessage();
-            if (message != null)
-                return usersHandler.answerMessage(update.getMessage());
-        }
-        return null;
+    MessageHandler usersHandler = usersHandlers.get(chatId);
+    if (update.hasCallbackQuery()) {
+      CallbackQuery callbackQuery = update.getCallbackQuery();
+      return callbackQueryHandler.processCallbackQuery(callbackQuery);
+    } else {
+      Message message = update.getMessage();
+      if (message != null) {
+        return usersHandler.answerMessage(update.getMessage());
+      }
     }
+    return null;
+  }
 }
