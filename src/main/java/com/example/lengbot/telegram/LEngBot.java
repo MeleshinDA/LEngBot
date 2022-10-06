@@ -4,6 +4,7 @@ package com.example.lengbot.telegram;
 import com.example.lengbot.constants.BotMessageEnum;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
 import com.example.lengbot.telegram.handlers.MessageHandler;
+import com.example.lengbot.telegram.handlers.MessageHandlerFactory;
 import lombok.Getter;
 import lombok.Setter;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -29,13 +30,15 @@ public class LEngBot extends SpringWebhookBot {
   private String botPath;
   private ConcurrentHashMap<Long, MessageHandler> usersHandlers;
   private CallbackQueryHandler callbackQueryHandler;
+  private MessageHandlerFactory messageHandlerFactory;
 
 
-  public LEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler) {
+  public LEngBot(SetWebhook setWebhook, CallbackQueryHandler callbackQueryHandler,
+      MessageHandlerFactory messageHandlerFactory) {
     super(setWebhook);
     this.usersHandlers = new ConcurrentHashMap<>();
     this.callbackQueryHandler = callbackQueryHandler;
-
+    this.messageHandlerFactory = messageHandlerFactory;
   }
 
 
@@ -58,7 +61,7 @@ public class LEngBot extends SpringWebhookBot {
     long chatId = update.getMessage().getChatId();
 
     if (!usersHandlers.containsKey(chatId)) {
-      usersHandlers.put(chatId, );
+      usersHandlers.put(chatId, messageHandlerFactory.createMessageHandler());
     }
     MessageHandler usersHandler = usersHandlers.get(chatId);
     if (update.hasCallbackQuery()) {

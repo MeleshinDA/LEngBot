@@ -1,11 +1,11 @@
 package com.example.lengbot.telegram.handlers;
 
+import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.services.UserStatesService;
 import com.example.lengbot.constants.BotMessageEnum;
 import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -15,16 +15,17 @@ import org.telegram.telegrambots.meta.api.objects.Message;
  * Обработчик сообщений пользователя
  */
 @Getter
-@Component
 public class MessageHandler {
 
   private final UserStatesService userStatesService;
   private final UserDAO userDAO;
+  private final ReplyKeyboardMaker replyKeyboardMaker = new ReplyKeyboardMaker();
 
-  public MessageHandler(UserDAO userDAO) {
-    this.userStatesService = new UserStatesService();
+  protected MessageHandler(UserDAO userDAO, QuestionDAO questionDAO) {
+    this.userStatesService = new UserStatesService(userDAO, questionDAO);
     this.userDAO = userDAO;
   }
+
 
   /**
    * @param message сообщение от пользователя
@@ -53,7 +54,7 @@ public class MessageHandler {
       case "/start" -> {
         userDAO.saveUser(Integer.parseInt(chatId));
         SendMessage message = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
-        message.setReplyMarkup(ReplyKeyboardMaker.getMainMenuKeyboard());
+        message.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
         yield message;
       }
       case "Пройти тест" -> {
@@ -68,13 +69,13 @@ public class MessageHandler {
       }
       case "Помощь" -> {
         SendMessage message = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
-        message.setReplyMarkup(ReplyKeyboardMaker.getMainMenuKeyboard());
+        message.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
         yield message;
       }
       default -> {
         SendMessage message = new SendMessage(chatId,
             BotMessageEnum.NON_COMMAND_MESSAGE.getMessage());
-        message.setReplyMarkup(ReplyKeyboardMaker.getMainMenuKeyboard());
+        message.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
         yield message;
       }
     };

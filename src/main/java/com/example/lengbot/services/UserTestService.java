@@ -39,8 +39,6 @@ public class UserTestService {
 
   /**
    * Итерируется по вопросам теста
-   *
-   * @return очередной вопрос
    */
   public void getNextQuestion() {
     if (testIterator.hasNext()) {
