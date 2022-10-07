@@ -22,6 +22,20 @@ public class ReplyKeyboardMaker {
     keyboardButtons.add(new KeyboardButton("Ввести уровень"));
     keyboardButtons.add(new KeyboardButton("Помощь"));
 
+    return getReplyKeyboardMarkup(keyboardButtons);
+  }
+
+  public ReplyKeyboardMarkup getTestAnswers(){
+    KeyboardRow keyboardButtons = new KeyboardRow();
+    keyboardButtons.add(new KeyboardButton("a"));
+    keyboardButtons.add(new KeyboardButton("b"));
+    keyboardButtons.add(new KeyboardButton("c"));
+    keyboardButtons.add(new KeyboardButton("d"));
+
+    return getReplyKeyboardMarkup(keyboardButtons);
+  }
+
+  private ReplyKeyboardMarkup getReplyKeyboardMarkup(KeyboardRow keyboardButtons) {
     List<KeyboardRow> keyboard = new ArrayList<>();
     keyboard.add(keyboardButtons);
 

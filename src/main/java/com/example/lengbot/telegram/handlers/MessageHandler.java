@@ -36,7 +36,16 @@ public class MessageHandler {
 
     return switch (userStatesService.getCurState()) {
       case DEFAULT -> handleMessage(inputText, chatId);
-      case TESTING -> new SendMessage(chatId, userStatesService.doTest(inputText, chatId));
+      case TESTING -> {
+        SendMessage replyMessage = new SendMessage(chatId,
+            userStatesService.doTest(inputText, chatId));
+        if (userStatesService.getUserTestService().getCurQuestion() == null) {
+          replyMessage.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        } else if (userStatesService.getUserTestService().getCurQuestion().getWeight() != 3) {
+          replyMessage.setReplyMarkup(replyKeyboardMaker.getTestAnswers());
+        }
+        yield replyMessage;
+      }
       case ENTERING_LEVEL -> new SendMessage(chatId, userStatesService.enterLvl(inputText, chatId));
     };
   }
@@ -59,8 +68,10 @@ public class MessageHandler {
       case "Пройти тест" -> {
         userStatesService.setCurState(HandlersStates.TESTING);
         userStatesService.getUserTestService().resetTest();
-        yield new SendMessage(chatId,
+        SendMessage replyMessage = new SendMessage(chatId,
             "Решите следующие задания:\n" + userStatesService.doTest(inputText, chatId));
+        replyMessage.setReplyMarkup(replyKeyboardMaker.getTestAnswers());
+        yield replyMessage;
       }
       case "Ввести уровень" -> {
         userStatesService.setCurState(HandlersStates.ENTERING_LEVEL);
