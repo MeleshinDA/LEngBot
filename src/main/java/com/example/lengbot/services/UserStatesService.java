@@ -2,11 +2,14 @@ package com.example.lengbot.services;
 
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
+import com.example.lengbot.services.structures.DefaultHashMap;
 import com.example.lengbot.telegram.handlers.HandlersStates;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 /**
  * Состояния пользователя
@@ -14,11 +17,10 @@ import java.util.ArrayList;
 
 @Getter
 public class UserStatesService {
-
   @Setter
   private HandlersStates curState = HandlersStates.DEFAULT;
-
-  private final UserTestService userTestService;
+  @Setter
+  private UserTestService userTestService;
   private final UserDAO userDAO;
 
   public UserStatesService(UserDAO userDAO, QuestionDAO questionDAO) {
@@ -41,7 +43,7 @@ public class UserStatesService {
     userTestService.getNextQuestion();
 
     if (userTestService.getCurQuestion() == null) {
-      userDAO.updateUser(Long.parseLong(chatId), userTestService.getLevel());
+      userDAO.updateUserLvl(Long.parseLong(chatId), userTestService.getLevel());
 
       curState = HandlersStates.DEFAULT;
 
@@ -63,10 +65,22 @@ public class UserStatesService {
    */
   public String enterLvl(String inputText, String chatId) {
     if (userTestService.isLvlCorrect(inputText)) {
-      userDAO.updateUser(Integer.parseInt(chatId), inputText.toUpperCase());
+      userDAO.updateUserLvl(Integer.parseInt(chatId), inputText.toUpperCase());
       curState = HandlersStates.DEFAULT;
       return "Уровень сохранён";
     }
     return "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2";
+  }
+
+  public String handleStates(Message message,
+      DefaultHashMap<String, Function<Message, String>> allCommands) {
+    String chatId = message.getChatId().toString();
+    String inputText = message.getText();
+
+    return switch (curState) {
+      case DEFAULT -> (allCommands.getDefault(inputText)).apply(message);
+      case TESTING -> this.doTest(inputText, chatId);
+      case ENTERING_LEVEL -> this.enterLvl(inputText, chatId);
+    };
   }
 }

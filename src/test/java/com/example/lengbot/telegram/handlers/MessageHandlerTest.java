@@ -2,6 +2,7 @@ package com.example.lengbot.telegram.handlers;
 
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
+import com.example.lengbot.dao.WordsDAO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,10 +20,17 @@ class MessageHandlerTest {
   private QuestionDAO questionDAO;
   @Autowired
   private UserDAO userDAO;
+  @Autowired
+  private WordsDAO wordsDAO;
 
   @Test
+  void getBoy()
+  {
+
+  }
+  @Test
   void answerMessage_DEFAULT() {
-    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO);
+    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO, wordsDAO);
     Message message = new Message();
     message.setText("Hello TEST");
     message.setChat(new Chat(21L, "255"));
@@ -35,7 +43,7 @@ class MessageHandlerTest {
 
   @Test
   void answerMessage_DEFAULTWithTestingMessage() {
-    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO);
+    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO, wordsDAO);
     Message message = new Message();
     message.setText("Пройти тест");
     message.setChat(new Chat(21L, "255"));
@@ -51,7 +59,7 @@ class MessageHandlerTest {
 
   @Test
   void answerMessage_DEFAULTWithEnteringLvlMessage() {
-    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO);
+    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO, wordsDAO);
     Message message = new Message();
     message.setText("Ввести уровень");
     message.setChat(new Chat(21L, "255"));
@@ -64,7 +72,7 @@ class MessageHandlerTest {
 
   @Test
   void answerMessage_DEFAULTWithHelpMessage() {
-    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO);
+    MessageHandler messageHandler = new MessageHandler(userDAO, questionDAO, wordsDAO);
     Message message = new Message();
     message.setText("Помощь");
     message.setChat(new Chat(21L, "255"));
