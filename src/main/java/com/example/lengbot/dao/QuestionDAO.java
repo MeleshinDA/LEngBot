@@ -1,11 +1,5 @@
 package com.example.lengbot.dao;
 
-import static java.sql.Types.CHAR;
-import static java.sql.Types.INTEGER;
-import static java.sql.Types.JAVA_OBJECT;
-import static java.sql.Types.OTHER;
-import static java.sql.Types.VARCHAR;
-
 import com.example.lengbot.models.Question;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,9 +24,9 @@ public class QuestionDAO {
     this.jdbcTemplate = jdbcTemplate;
 
     this.dbQuestionTypesToCount = new LinkedHashMap<>();
-    this.dbQuestionTypesToCount.put("first", 8);
-    this.dbQuestionTypesToCount.put("second", 5);
-    this.dbQuestionTypesToCount.put("third", 2);
+    this.dbQuestionTypesToCount.put("firsttypequestions", 8);
+    this.dbQuestionTypesToCount.put("secondtypequestions", 5);
+    this.dbQuestionTypesToCount.put("thirdtypequestions", 2);
   }
 
   /**
@@ -44,9 +38,9 @@ public class QuestionDAO {
     List<Question> test = new ArrayList<>();
 
     for (String tableName : dbQuestionTypesToCount.keySet()) {
-      test.addAll(jdbcTemplate.query("SELECT * FROM "+tableName+" ORDER BY RANDOM() LIMIT ?",
-          new Object[]{dbQuestionTypesToCount.get(tableName)},
-          new int[]{INTEGER},
+      String sql = String.format("SELECT * FROM %s ORDER BY RANDOM() LIMIT %d", tableName,
+          dbQuestionTypesToCount.get(tableName));
+      test.addAll(jdbcTemplate.query(sql,
           new QuestionMapper()));
     }
 

@@ -21,11 +21,12 @@ public class ReplyKeyboardMaker {
     keyboardButtons.add(new KeyboardButton("Пройти тест"));
     keyboardButtons.add(new KeyboardButton("Ввести уровень"));
     keyboardButtons.add(new KeyboardButton("Помощь"));
+    keyboardButtons.add(new KeyboardButton("Получить слова"));
 
     return getReplyKeyboardMarkup(keyboardButtons);
   }
 
-  public ReplyKeyboardMarkup getTestAnswers(){
+  public ReplyKeyboardMarkup getTestAnswers() {
     KeyboardRow keyboardButtons = new KeyboardRow();
     keyboardButtons.add(new KeyboardButton("a"));
     keyboardButtons.add(new KeyboardButton("b"));

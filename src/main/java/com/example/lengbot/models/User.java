@@ -2,11 +2,13 @@ package com.example.lengbot.models;
 
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Модель пользователя бота
  */
 @Getter
+@Setter
 public class User {
 
   /**
@@ -17,6 +19,7 @@ public class User {
    * Уровень английского языка пользователя
    */
   private String lvl;
+  private int curWordsIndex = 0;
 
   public User() {
 

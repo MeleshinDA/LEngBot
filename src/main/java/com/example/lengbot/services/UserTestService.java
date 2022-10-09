@@ -2,6 +2,7 @@ package com.example.lengbot.services;
 
 import com.example.lengbot.models.Question;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,6 +16,7 @@ public class UserTestService {
 
   private final Set<String> rightLevels = new HashSet<>();
   private Question curQuestion;
+  @Setter
   private List<Question> test;
   private Iterator<Question> testIterator;
 

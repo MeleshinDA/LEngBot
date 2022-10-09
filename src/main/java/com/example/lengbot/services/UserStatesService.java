@@ -2,11 +2,16 @@ package com.example.lengbot.services;
 
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
+import com.example.lengbot.services.structures.DefaultHashMap;
 import com.example.lengbot.telegram.handlers.HandlersStates;
+import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 /**
  * Состояния пользователя
@@ -17,9 +22,10 @@ public class UserStatesService {
 
   @Setter
   private HandlersStates curState = HandlersStates.DEFAULT;
-
-  private final UserTestService userTestService;
+  @Setter
+  private UserTestService userTestService;
   private final UserDAO userDAO;
+  private final ReplyKeyboardMaker replyKeyboardMaker = new ReplyKeyboardMaker();
 
   public UserStatesService(UserDAO userDAO, QuestionDAO questionDAO) {
     this.userDAO = userDAO;
@@ -41,7 +47,7 @@ public class UserStatesService {
     userTestService.getNextQuestion();
 
     if (userTestService.getCurQuestion() == null) {
-      userDAO.updateUser(Long.parseLong(chatId), userTestService.getLevel());
+      userDAO.updateUserLvl(Long.parseLong(chatId), userTestService.getLevel());
 
       curState = HandlersStates.DEFAULT;
 
@@ -63,10 +69,42 @@ public class UserStatesService {
    */
   public String enterLvl(String inputText, String chatId) {
     if (userTestService.isLvlCorrect(inputText)) {
-      userDAO.updateUser(Integer.parseInt(chatId), inputText.toUpperCase());
+      userDAO.updateUserLvl(Integer.parseInt(chatId), inputText.toUpperCase());
       curState = HandlersStates.DEFAULT;
       return "Уровень сохранён";
     }
     return "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2";
+  }
+
+  public SendMessage handleStates(Message message,
+      DefaultHashMap<String, Function<Message, SendMessage>> allCommands) {
+    String chatId = message.getChatId().toString();
+    String inputText = message.getText();
+
+    return switch (curState) {
+      case DEFAULT -> {
+        SendMessage reply = (allCommands.getDefault(inputText)).apply(message);
+        if (userTestService.getCurQuestion() != null) {
+          reply.setReplyMarkup(replyKeyboardMaker.getTestAnswers());
+        } else {
+          reply.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        }
+        yield reply;
+      }
+      case TESTING -> {
+        SendMessage reply = new SendMessage(chatId, this.doTest(inputText, chatId));
+        if (userTestService.getCurQuestion() == null) {
+          reply.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        } else if (userTestService.getCurQuestion().getWeight() != 3) {
+          reply.setReplyMarkup(replyKeyboardMaker.getTestAnswers());
+        }
+        yield reply;
+      }
+      case ENTERING_LEVEL -> {
+        SendMessage reply = new SendMessage(chatId, this.enterLvl(inputText, chatId));
+        reply.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        yield reply;
+      }
+    };
   }
 }
