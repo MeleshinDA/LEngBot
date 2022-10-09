@@ -1,6 +1,6 @@
 package com.example.lengbot.services;
 
-import com.example.lengbot.appconfig.constants.BotMessageEnum;
+import com.example.lengbot.constants.BotMessageEnum;
 import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.dao.WordsDAO;
@@ -10,12 +10,13 @@ import java.util.List;
 import java.util.function.Function;
 import lombok.Getter;
 import org.apache.tomcat.util.buf.StringUtils;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 public class HandlersCommandService { // Можно разедлить на 2 класса, в одном те, которые требуют chatId, в другом inputText и chatId
 
   @Getter
-  private final DefaultHashMap<String, Function<Message, String>> allCommands;
+  private final DefaultHashMap<String, Function<Message, SendMessage>> allCommands;
   private final UserStatesService userStatesService;
   private final UserDAO userDAO;
   private final QuestionDAO questionDAO;
@@ -37,40 +38,59 @@ public class HandlersCommandService { // Можно разедлить на 2 к
     this.allCommands.put("Получить слова", this::getNewWordsMethod);
   }
 
-  private String startMethod(Message message) {
+  private SendMessage startMethod(Message message) {
+
     String chatId = message.getChatId().toString();
     userDAO.saveUser(Integer.parseInt(chatId));
 
-    return BotMessageEnum.HELP_MESSAGE.getMessage();
+    SendMessage reply = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
+
+    return reply;
   }
 
-  private String startTestMethod(Message message) {
+  private SendMessage startTestMethod(Message message) {
     String chatId = message.getChatId().toString();
     String inputText = message.getText();
 
     userStatesService.getUserTestService().setTest(questionDAO.getTest());
     userStatesService.setCurState(HandlersStates.TESTING);
     userStatesService.getUserTestService().resetTest();
-    return "Решите следующие задания:\n" + userStatesService.doTest(inputText, chatId);
+
+    SendMessage reply = new SendMessage(chatId,"Решите следующие задания:\n" + userStatesService.doTest(inputText, chatId));
+
+    return reply;
   }
 
-  private String enterLvlMethod(Message message) {
+  private SendMessage enterLvlMethod(Message message) {
+    String chatId = message.getChatId().toString();
     userStatesService.setCurState(HandlersStates.ENTERING_LEVEL);
-    return "Введите Ваш уровень. Доступны: A0, A1, A2, B1, B2, C1, C2.";
+    SendMessage reply = new SendMessage(chatId,"Введите Ваш уровень. Доступны: A0, A1, A2, B1, B2, C1, C2.");
+
+    return reply;
   }
 
-  private String helpMethod(Message message) {
-    return BotMessageEnum.HELP_MESSAGE.getMessage();
+  private SendMessage helpMethod(Message message) {
+    String chatId = message.getChatId().toString();
+    SendMessage reply = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
+
+    return reply;
   }
 
-  private String getNewWordsMethod(Message message) {
+  private SendMessage getNewWordsMethod(Message message) {
     Long chatId = message.getChatId();
+
     List<String> words = wordsDAO.getNewWordsFromDb(chatId);
 
-    return StringUtils.join(words, '\n');
+    SendMessage reply = new SendMessage(chatId.toString(), StringUtils.join(words, '\n'));
+
+    return reply;
   }
 
-  private String defaultMethod(Message message) {
-    return BotMessageEnum.NON_COMMAND_MESSAGE.getMessage();
+  private SendMessage defaultMethod(Message message) {
+    String chatId = message.getChatId().toString();
+
+    SendMessage reply = new SendMessage(chatId, BotMessageEnum.NON_COMMAND_MESSAGE.getMessage());
+
+    return reply;
   }
 }

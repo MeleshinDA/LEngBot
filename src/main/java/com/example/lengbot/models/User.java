@@ -19,7 +19,7 @@ public class User {
    * Уровень английского языка пользователя
    */
   private String lvl;
-  private int curWordsIndex;
+  private int curWordsIndex = 0;
 
   public User() {
 

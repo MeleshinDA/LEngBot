@@ -1,7 +1,7 @@
 package com.example.lengbot.telegram;
 
 
-import com.example.lengbot.appconfig.constants.BotMessageEnum;
+import com.example.lengbot.constants.BotMessageEnum;
 import com.example.lengbot.telegram.handlers.CallbackQueryHandler;
 import com.example.lengbot.telegram.handlers.MessageHandler;
 import com.example.lengbot.telegram.handlers.MessageHandlerFactory;

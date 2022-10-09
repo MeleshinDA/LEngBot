@@ -24,8 +24,12 @@ public class UserDAO {
    *
    * @param chatId чат пользователя
    */
-  public void saveUser(long chatId) {
-    jdbcTemplate.update("INSERT INTO users(id, lvl) VALUES(?, ?)", chatId, "A0");
+  public void saveUser(long chatId) { // user в WordsDAO не инициализируется, где-то
+    try
+    {
+      jdbcTemplate.update("INSERT INTO users(id, lvl, curWordsIndex) VALUES(?, ?, ?)", chatId, "A0",
+          0);
+    } catch (Exception e) {}
   }
 
   /**
@@ -42,9 +46,9 @@ public class UserDAO {
     jdbcTemplate.update("UPDATE users SET curWordsIndex=? WHERE id=?", curWordsIndex, chatId);
   }
 
-  public User getUser(long chatId)
-  {
-    return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new Object[]{chatId}, new UserMapper());
+  public User getUser(long chatId) {
+    return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new Object[]{chatId},
+        new UserMapper());
   }
 
 }

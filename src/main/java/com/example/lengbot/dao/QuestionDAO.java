@@ -24,9 +24,9 @@ public class QuestionDAO {
     this.jdbcTemplate = jdbcTemplate;
 
     this.dbQuestionTypesToCount = new LinkedHashMap<>();
-    this.dbQuestionTypesToCount.put("first", 8);
-    this.dbQuestionTypesToCount.put("second", 5);
-    this.dbQuestionTypesToCount.put("third", 2);
+    this.dbQuestionTypesToCount.put("firsttypequestions", 8);
+    this.dbQuestionTypesToCount.put("secondtypequestions", 5);
+    this.dbQuestionTypesToCount.put("thirdtypequestions", 2);
   }
 
   /**

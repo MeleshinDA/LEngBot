@@ -2,6 +2,8 @@ package com.example.lengbot.dao;
 
 import com.example.lengbot.models.User;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class WordsDAO {
 
+  private final int wordsCountToSend = 3;
   private final JdbcTemplate jdbcTemplate;
   private final UserDAO userDAO;
 
@@ -16,32 +19,35 @@ public class WordsDAO {
   public WordsDAO(JdbcTemplate jdbcTemplate, UserDAO userDAO) {
     this.jdbcTemplate = jdbcTemplate;
     this.userDAO = userDAO;
+
   }
 
   public List<String> getNewWordsFromDb(long chatId) {
+    long time = System.currentTimeMillis();
     User curUser = userDAO.getUser(chatId);
-    // Вычитаем 1 потому что Between - включительное нер-во
+
+
     var prevIndex = curUser.getCurWordsIndex();
-    var curIndex = checkWordsIndex(chatId, curUser) - 1;
+    curUser.setCurWordsIndex(prevIndex + wordsCountToSend);
 
+    // Вычитаем 1 потому что Between - включительное нер-во
     String sql = String.format("SELECT word FROM %s WHERE id BETWEEN %d AND %d", curUser.getLvl(),
-        prevIndex, curIndex);
+        prevIndex, curUser.getCurWordsIndex() - 1);
 
-    return jdbcTemplate.queryForList(sql, String.class);
+    var res = jdbcTemplate.queryForList(sql, String.class);
+
+    updateUserIndex(chatId, res.size(), curUser.getCurWordsIndex());
+
+    System.out.println(System.currentTimeMillis() - time);
+    return res;
+
   }
 
-  private int checkWordsIndex(long chatId, User curUser) {
-    String wordsSql = String.format("SELECT count(*) FROM %s", curUser.getLvl());
-    int wordsCount = jdbcTemplate.queryForObject(wordsSql, Integer.class);
-    int wordsCountToSend = 5;
-    int nextWordsIndex = curUser.getCurWordsIndex() + wordsCountToSend;
-
-    if (nextWordsIndex > wordsCount) {
+  private void updateUserIndex(long chatId, int size, int nextWordsIndex) {
+    if (size < wordsCountToSend) {
       userDAO.updateUserIndex(chatId, 0);
     } else {
       userDAO.updateUserIndex(chatId, nextWordsIndex);
     }
-
-    return nextWordsIndex;
   }
 }

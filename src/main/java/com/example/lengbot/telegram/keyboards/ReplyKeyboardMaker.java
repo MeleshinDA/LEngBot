@@ -21,6 +21,7 @@ public class ReplyKeyboardMaker {
     keyboardButtons.add(new KeyboardButton("Пройти тест"));
     keyboardButtons.add(new KeyboardButton("Ввести уровень"));
     keyboardButtons.add(new KeyboardButton("Помощь"));
+    keyboardButtons.add(new KeyboardButton("Получить слова"));
 
     return getReplyKeyboardMarkup(keyboardButtons);
   }

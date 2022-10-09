@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 /**
@@ -72,15 +73,15 @@ public class UserStatesService {
     return "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2";
   }
 
-  public String handleStates(Message message,
-      DefaultHashMap<String, Function<Message, String>> allCommands) {
+  public SendMessage handleStates(Message message,
+      DefaultHashMap<String, Function<Message, SendMessage>> allCommands) {
     String chatId = message.getChatId().toString();
     String inputText = message.getText();
 
     return switch (curState) {
       case DEFAULT -> (allCommands.getDefault(inputText)).apply(message);
-      case TESTING -> this.doTest(inputText, chatId);
-      case ENTERING_LEVEL -> this.enterLvl(inputText, chatId);
+      case TESTING -> new SendMessage(chatId, this.doTest(inputText, chatId));
+      case ENTERING_LEVEL -> new SendMessage(chatId, this.enterLvl(inputText, chatId));
     };
   }
 }

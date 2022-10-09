@@ -36,15 +36,7 @@ public class MessageHandler {
    */
   public BotApiMethod<?> answerMessage(Message message) {
 
-    String chatId = message.getChatId().toString();
-
-    String replyText = userStatesService.handleStates(message, handlersCommandService.getAllCommands());
-
-    SendMessage replyMessage = new SendMessage(chatId, replyText);
-
-    replyMessage.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
-
-    return replyMessage;
+    return userStatesService.handleStates(message, handlersCommandService.getAllCommands());
 
   }
 }
