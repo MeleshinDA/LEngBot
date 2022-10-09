@@ -4,6 +4,7 @@ import com.example.lengbot.dao.QuestionDAO;
 import com.example.lengbot.dao.UserDAO;
 import com.example.lengbot.services.structures.DefaultHashMap;
 import com.example.lengbot.telegram.handlers.HandlersStates;
+import com.example.lengbot.telegram.keyboards.ReplyKeyboardMaker;
 import java.util.function.Function;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +19,13 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Getter
 public class UserStatesService {
+
   @Setter
   private HandlersStates curState = HandlersStates.DEFAULT;
   @Setter
   private UserTestService userTestService;
   private final UserDAO userDAO;
+  private final ReplyKeyboardMaker replyKeyboardMaker = new ReplyKeyboardMaker();
 
   public UserStatesService(UserDAO userDAO, QuestionDAO questionDAO) {
     this.userDAO = userDAO;
@@ -79,9 +82,29 @@ public class UserStatesService {
     String inputText = message.getText();
 
     return switch (curState) {
-      case DEFAULT -> (allCommands.getDefault(inputText)).apply(message);
-      case TESTING -> new SendMessage(chatId, this.doTest(inputText, chatId));
-      case ENTERING_LEVEL -> new SendMessage(chatId, this.enterLvl(inputText, chatId));
+      case DEFAULT -> {
+        SendMessage reply = (allCommands.getDefault(inputText)).apply(message);
+        if (userTestService.getCurQuestion() != null) {
+          reply.setReplyMarkup(replyKeyboardMaker.getTestAnswers());
+        } else {
+          reply.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        }
+        yield reply;
+      }
+      case TESTING -> {
+        SendMessage reply = new SendMessage(chatId, this.doTest(inputText, chatId));
+        if (userTestService.getCurQuestion() == null) {
+          reply.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        } else if (userTestService.getCurQuestion().getWeight() != 3) {
+          reply.setReplyMarkup(replyKeyboardMaker.getTestAnswers());
+        }
+        yield reply;
+      }
+      case ENTERING_LEVEL -> {
+        SendMessage reply = new SendMessage(chatId, this.enterLvl(inputText, chatId));
+        reply.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
+        yield reply;
+      }
     };
   }
 }

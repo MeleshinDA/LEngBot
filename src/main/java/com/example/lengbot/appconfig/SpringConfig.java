@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 
@@ -28,7 +27,7 @@ public class SpringConfig {
 
   @Bean
   public DataSource dataSource() {
-    SingleConnectionDataSource driverManagerDataSource = new SingleConnectionDataSource ();
+    SingleConnectionDataSource driverManagerDataSource = new SingleConnectionDataSource();
     driverManagerDataSource.setDriverClassName(dbConfig.getDriver());
     driverManagerDataSource.setUrl(dbConfig.getURL());
     driverManagerDataSource.setUsername(dbConfig.getUserName());

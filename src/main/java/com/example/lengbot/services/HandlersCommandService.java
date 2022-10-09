@@ -23,8 +23,8 @@ public class HandlersCommandService { // Можно разедлить на 2 к
   private final WordsDAO wordsDAO;
 
 
-  public HandlersCommandService(UserDAO userDAO, QuestionDAO questionDAO,
-      WordsDAO wordsDAO, UserStatesService userStatesService) {
+  public HandlersCommandService(UserDAO userDAO, QuestionDAO questionDAO, WordsDAO wordsDAO,
+      UserStatesService userStatesService) {
     this.userDAO = userDAO;
     this.questionDAO = questionDAO;
     this.wordsDAO = wordsDAO;
@@ -43,9 +43,7 @@ public class HandlersCommandService { // Можно разедлить на 2 к
     String chatId = message.getChatId().toString();
     userDAO.saveUser(Integer.parseInt(chatId));
 
-    SendMessage reply = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
-
-    return reply;
+    return new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
   }
 
   private SendMessage startTestMethod(Message message) {
@@ -56,24 +54,21 @@ public class HandlersCommandService { // Можно разедлить на 2 к
     userStatesService.setCurState(HandlersStates.TESTING);
     userStatesService.getUserTestService().resetTest();
 
-    SendMessage reply = new SendMessage(chatId,"Решите следующие задания:\n" + userStatesService.doTest(inputText, chatId));
-
-    return reply;
+    return new SendMessage(chatId,
+        "Решите следующие задания:\n" + userStatesService.doTest(inputText, chatId));
   }
 
   private SendMessage enterLvlMethod(Message message) {
     String chatId = message.getChatId().toString();
     userStatesService.setCurState(HandlersStates.ENTERING_LEVEL);
-    SendMessage reply = new SendMessage(chatId,"Введите Ваш уровень. Доступны: A0, A1, A2, B1, B2, C1, C2.");
 
-    return reply;
+    return new SendMessage(chatId, "Введите Ваш уровень. Доступны: A0, A1, A2, B1, B2, C1, C2.");
   }
 
   private SendMessage helpMethod(Message message) {
     String chatId = message.getChatId().toString();
-    SendMessage reply = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
 
-    return reply;
+    return new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
   }
 
   private SendMessage getNewWordsMethod(Message message) {
@@ -81,16 +76,12 @@ public class HandlersCommandService { // Можно разедлить на 2 к
 
     List<String> words = wordsDAO.getNewWordsFromDb(chatId);
 
-    SendMessage reply = new SendMessage(chatId.toString(), StringUtils.join(words, '\n'));
-
-    return reply;
+    return new SendMessage(chatId.toString(), StringUtils.join(words, '\n'));
   }
 
   private SendMessage defaultMethod(Message message) {
     String chatId = message.getChatId().toString();
 
-    SendMessage reply = new SendMessage(chatId, BotMessageEnum.NON_COMMAND_MESSAGE.getMessage());
-
-    return reply;
+    return new SendMessage(chatId, BotMessageEnum.NON_COMMAND_MESSAGE.getMessage());
   }
 }

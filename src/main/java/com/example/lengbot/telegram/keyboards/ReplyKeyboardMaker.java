@@ -26,7 +26,7 @@ public class ReplyKeyboardMaker {
     return getReplyKeyboardMarkup(keyboardButtons);
   }
 
-  public ReplyKeyboardMarkup getTestAnswers(){
+  public ReplyKeyboardMarkup getTestAnswers() {
     KeyboardRow keyboardButtons = new KeyboardRow();
     keyboardButtons.add(new KeyboardButton("a"));
     keyboardButtons.add(new KeyboardButton("b"));

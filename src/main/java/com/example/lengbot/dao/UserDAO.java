@@ -25,11 +25,11 @@ public class UserDAO {
    * @param chatId чат пользователя
    */
   public void saveUser(long chatId) { // user в WordsDAO не инициализируется, где-то
-    try
-    {
+    try {
       jdbcTemplate.update("INSERT INTO users(id, lvl, curWordsIndex) VALUES(?, ?, ?)", chatId, "A0",
           0);
-    } catch (Exception e) {}
+    } catch (Exception e) {
+    }
   }
 
   /**
@@ -47,8 +47,7 @@ public class UserDAO {
   }
 
   public User getUser(long chatId) {
-    return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new Object[]{chatId},
-        new UserMapper());
+    return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), chatId);
   }
 
 }

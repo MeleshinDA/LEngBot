@@ -37,9 +37,9 @@ public class QuestionDAO {
   public List<Question> getTest() {
     List<Question> test = new ArrayList<>();
 
-
     for (String tableName : dbQuestionTypesToCount.keySet()) {
-      var sql = String.format("SELECT * FROM %s ORDER BY RANDOM() LIMIT %d", tableName, dbQuestionTypesToCount.get(tableName));
+      String sql = String.format("SELECT * FROM %s ORDER BY RANDOM() LIMIT %d", tableName,
+          dbQuestionTypesToCount.get(tableName));
       test.addAll(jdbcTemplate.query(sql,
           new QuestionMapper()));
     }
