@@ -40,8 +40,7 @@ class WordsDAOTest {
     userDAO.updateUserLvl(testChatId, "tabletestlvl");
 
     List<String> words = new ArrayList<>();
-    for (var i = 0; i < Math.ceil(wordsCount/3.0); i++)
-    {
+    for (var i = 0; i < Math.ceil(wordsCount / 3.0); i++) {
       var wordsToAdd = (wordsDAO.getNewWordsFromDb(testChatId));
       words.addAll(wordsToAdd);
     }
@@ -55,17 +54,35 @@ class WordsDAOTest {
     var testChatId = 777777777;
     String wordsSql = String.format("SELECT count(*) FROM %s", "tabletestlvl");
     int wordsCount = jdbcTemplate.queryForObject(wordsSql, Integer.class);
-    int itersCount = (int)Math.ceil(wordsCount/3.0) + 1;
+    int itersCount = (int) Math.ceil(wordsCount / 3.0) + 1;
     userDAO.updateUserLvl(testChatId, "tabletestlvl");
 
     List<String> words = new ArrayList<>();
-    for (var i = 0; i < itersCount; i++)
-    {
+    for (var i = 0; i < itersCount; i++) {
       var wordsToAdd = (wordsDAO.getNewWordsFromDb(testChatId));
       words.addAll(wordsToAdd);
     }
 
     wordsCount += 3;
     assertEquals(wordsCount, words.size());
+  }
+
+  @Test
+  void getNewWords_OnLevelChangeReturnsOtherLevelsWords() {
+    var testChatId = 777777777;
+    userDAO.updateUserLvl(testChatId, "tabletestlvl");
+    List<String> actual = wordsDAO.getNewWordsFromDb(testChatId);
+    userDAO.updateUserLvl(testChatId, "tabletesslvl2");
+    actual.addAll(wordsDAO.getNewWordsFromDb(testChatId));
+
+    List<String> expected = new ArrayList<>();
+    expected.add("Day-день");
+    expected.add("Hello-привет");
+    expected.add("Star-звезда");
+    expected.add("word1-слово1");
+    expected.add("word2-слово2");
+    expected.add("word3-слово3");
+
+    assertEquals(expected, actual);
   }
 }
