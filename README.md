@@ -20,7 +20,7 @@ $ mvn install
 ![image](https://user-images.githubusercontent.com/43640874/195334566-d9cd8bca-219e-493b-9485-708ae15f29a4.png)
 4. Запуск бота локально.
 ```
-$ java -jar 
+$ java -jar target/telegram_bot-0.0.1-SNAPSHOT.jar
 ```
 5. Чтобы развернуть бота на Heroku, нужно выполнить следующие действия
 ```
