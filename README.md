@@ -16,3 +16,4 @@ $ git clone https://github.com/MeleshinDA/LEngBot
 ```
 $ mvn install
 ```
+Получить токен для бота у @BotFather. Добавить его в [Contribution guidelines for this project](docs/CONTRIBUTING.md)
