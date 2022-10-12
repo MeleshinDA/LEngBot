@@ -33,7 +33,7 @@ public class UserDAO {
   }
 
   /**
-   * Метод обновления данных пользователя в базе данных
+   * Метод обновленя уровня пользователя в базе данных
    *
    * @param chatId идентификатор пользователя
    * @param lvl    уровень английского языка пользователя
@@ -42,10 +42,21 @@ public class UserDAO {
     jdbcTemplate.update("UPDATE users SET lvl=?, curWordsIndex=? WHERE id=?", lvl, 0, chatId);
   }
 
+  /**
+   * Метод обновленя индекса слов пользователя в базе данных
+   *
+   * @param chatId        идентификатор пользователя
+   * @param curWordsIndex текущий индекс слов пользователя
+   */
   public void updateUserIndex(long chatId, int curWordsIndex) {
     jdbcTemplate.update("UPDATE users SET curWordsIndex=? WHERE id=?", curWordsIndex, chatId);
   }
 
+  /**
+   * Метод получения данных пользователя из бд
+   *
+   * @param chatId идентификатор пользователя
+   */
   public User getUser(long chatId) {
     return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), chatId);
   }

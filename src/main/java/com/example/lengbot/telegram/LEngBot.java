@@ -49,6 +49,8 @@ public class LEngBot extends SpringWebhookBot {
     } catch (IllegalArgumentException e) {
       return new SendMessage(update.getMessage().getChatId().toString(),
           BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE.getMessage());
+    } catch (NullPointerException ignored) {
+      return null;
     }
   }
 

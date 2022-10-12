@@ -24,12 +24,11 @@ class WordsDAOTest {
   private JdbcTemplate jdbcTemplate;
 
   @Test
-  void getNewWords_OnOneUseReturnsFiveWords() {
+  void getNewWords_OnOneUseReturnsThreeWords() {
     var testChatId = 777777777;
     userDAO.updateUserLvl(testChatId, "tabletestlvl");
     List<String> words = wordsDAO.getNewWordsFromDb(testChatId);
-    assertEquals(5, words.size());
-
+    assertEquals(3, words.size());
   }
 
   @Test
@@ -41,7 +40,7 @@ class WordsDAOTest {
     userDAO.updateUserLvl(testChatId, "tabletestlvl");
 
     List<String> words = new ArrayList<>();
-    for (var i = 0; i < Math.ceil(wordsCount/5.0); i++)
+    for (var i = 0; i < Math.ceil(wordsCount/3.0); i++)
     {
       var wordsToAdd = (wordsDAO.getNewWordsFromDb(testChatId));
       words.addAll(wordsToAdd);
@@ -56,7 +55,7 @@ class WordsDAOTest {
     var testChatId = 777777777;
     String wordsSql = String.format("SELECT count(*) FROM %s", "tabletestlvl");
     int wordsCount = jdbcTemplate.queryForObject(wordsSql, Integer.class);
-    int itersCount = (int)Math.ceil(wordsCount/5.0) + 1;
+    int itersCount = (int)Math.ceil(wordsCount/3.0) + 1;
     userDAO.updateUserLvl(testChatId, "tabletestlvl");
 
     List<String> words = new ArrayList<>();
@@ -66,7 +65,7 @@ class WordsDAOTest {
       words.addAll(wordsToAdd);
     }
 
-    wordsCount += 5;
+    wordsCount += 3;
     assertEquals(wordsCount, words.size());
   }
 }

@@ -36,17 +36,6 @@ class UserStatesServiceTest {
   }
 
   @Test
-  void doTest_OnInputReturnOtherQuestion() {
-    UserStatesService userStatesService = new UserStatesService(userDAO, questionDAO);
-
-    String actual = userStatesService.doTest("a", "2");
-    String expected = "Переведите слово: Sunrise\n"
-        + "a. Озеро, b. Река, c. Восход, d. Страна";
-    assertEquals(expected, actual);
-
-  }
-
-  @Test
   void doTest_FullScoresAvailable() {
     UserStatesService userStatesService = new UserStatesService(userDAO, questionDAO);
 

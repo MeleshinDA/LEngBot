@@ -6,9 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Интерфейс работы баз данных для полчения новых слов
+ */
 @Repository
 public class WordsDAO {
 
+  /**
+   * Количество слов, отправляемых пользователю за раз
+   */
   private final int wordsCountToSend = 3;
   private final JdbcTemplate jdbcTemplate;
   private final UserDAO userDAO;
@@ -38,6 +44,13 @@ public class WordsDAO {
 
   }
 
+  /**
+   * Метод обновленя индекса слов пользователя в базе данных после получения очередного набора слов
+   *
+   * @param chatId         идентификатор пользователя
+   * @param size           размер списка слов на отправку
+   * @param nextWordsIndex следующий индекс, который записываем в бд.
+   */
   private void updateUserIndex(long chatId, int size, int nextWordsIndex) {
     if (size < wordsCountToSend) {
       userDAO.updateUserIndex(chatId, 0);

@@ -28,10 +28,12 @@ public class SpringConfig {
   @Bean
   public DataSource dataSource() {
     SingleConnectionDataSource driverManagerDataSource = new SingleConnectionDataSource();
+
     driverManagerDataSource.setDriverClassName(dbConfig.getDriver());
     driverManagerDataSource.setUrl(dbConfig.getURL());
     driverManagerDataSource.setUsername(dbConfig.getUserName());
     driverManagerDataSource.setPassword(dbConfig.getPassword());
+
     return driverManagerDataSource;
   }
 

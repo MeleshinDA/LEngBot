@@ -76,6 +76,13 @@ public class UserStatesService {
     return "Неправильно введён уровень, доступные варианты: A1, A2, B1, B2, C1, C2";
   }
 
+  /**
+   * Метод, который в соответствии с текущим состоянием формирует сообщение для отправки.
+   *
+   * @param message     полученное сообщение
+   * @param allCommands все доступные команды
+   * @return ответ пользователю (Message)
+   */
   public SendMessage handleStates(Message message,
       DefaultHashMap<String, Function<Message, SendMessage>> allCommands) {
     String chatId = message.getChatId().toString();
@@ -84,11 +91,13 @@ public class UserStatesService {
     return switch (curState) {
       case DEFAULT -> {
         SendMessage reply = (allCommands.getDefault(inputText)).apply(message);
+
         if (userTestService.getCurQuestion() != null) {
           reply.setReplyMarkup(replyKeyboardMaker.getTestAnswers());
         } else {
           reply.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
         }
+
         yield reply;
       }
       case TESTING -> {
